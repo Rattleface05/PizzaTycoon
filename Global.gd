@@ -14,6 +14,24 @@ var pizzas_ready: int = 0:
 		pizzas_ready = value
 		pizzas_ready_changed.emit(pizzas_ready)
 
+var ready_pizzas_prices: Array[float] = []
+
+func add_pizza(price: float):
+	ready_pizzas_prices.append(price)
+	pizzas_ready = ready_pizzas_prices.size()
+
+func sell_pizza() -> float:
+	if ready_pizzas_prices.size() > 0:
+		var price = ready_pizzas_prices.pop_front()
+		pizzas_ready = ready_pizzas_prices.size()
+		return price
+	return 0.0
+
+func get_next_pizza_price() -> float:
+	if ready_pizzas_prices.size() > 0:
+		return ready_pizzas_prices[0]
+	return 0.0
+
 var upgrade_level: int = 0:
 	set(value):
 		upgrade_level = value

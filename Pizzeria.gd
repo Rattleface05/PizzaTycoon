@@ -7,7 +7,6 @@ extends Control
 @onready var upgrade_button = $VBoxContainer/UpgradeButton
 @onready var to_kitchen_button = $ToKitchenButton
 
-const PIZZA_PRICE = 10.0
 const UPGRADE_PRICES = [20.0, 100.0, 500.0]
 var LEVEL_TEXTURES = [
 	preload("res://textures/backgrounds/tables_poor.jpg"),
@@ -33,7 +32,6 @@ func _ready():
 	Global.level_changed.connect(_on_level_changed)
 	
 	# Initial UI updates
-	sell_button.text = "Sell Pizza [SPACE] ($10)"
 	to_kitchen_button.text = "<- Go to Kitchen [A]"
 	
 	_on_money_changed(Global.money)
@@ -69,9 +67,9 @@ func _process(delta):
 
 func _on_sell_pressed():
 	if Global.pizzas_ready > 0:
-		Global.pizzas_ready -= 1
-		Global.money += PIZZA_PRICE
-		_spawn_floating_text("+$" + str(PIZZA_PRICE), sell_button.global_position)
+		var price = Global.sell_pizza()
+		Global.money += price
+		_spawn_floating_text("+$" + str(price), sell_button.global_position)
 
 func _on_upgrade_pressed():
 	if Global.upgrade_level < UPGRADE_PRICES.size():
@@ -100,6 +98,10 @@ func _on_level_changed(level):
 
 func _update_buttons():
 	sell_button.disabled = Global.pizzas_ready <= 0
+	if Global.pizzas_ready > 0:
+		sell_button.text = "Sell Pizza [SPACE] ($" + str(Global.get_next_pizza_price()) + ")"
+	else:
+		sell_button.text = "Sell Pizza [SPACE]"
 	
 	if Global.upgrade_level < UPGRADE_PRICES.size():
 		var cost = UPGRADE_PRICES[Global.upgrade_level]
