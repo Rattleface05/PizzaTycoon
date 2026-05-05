@@ -1,6 +1,6 @@
 extends Control
 
-@onready var background = $ColorRect
+@onready var background = $Background
 @onready var money_label = $HUD/MoneyLabel
 @onready var pizzas_label = $HUD/PizzasLabel
 @onready var sell_button = $VBoxContainer/SellButton
@@ -8,11 +8,12 @@ extends Control
 @onready var to_kitchen_button = $ToKitchenButton
 
 const PIZZA_PRICE = 10.0
-const UPGRADE_PRICES = [100.0, 500.0]
-const LEVEL_COLORS = [
-	Color(0.3, 0.3, 0.3, 1), # Level 0: Dull gray
-	Color(0.6, 0.5, 0.4, 1), # Level 1: Wood-like
-	Color(0.2, 0.6, 0.8, 1)  # Level 2: Bright Blue
+const UPGRADE_PRICES = [20.0, 100.0, 500.0]
+var LEVEL_TEXTURES = [
+	preload("res://textures/backgrounds/tables_poor.jpg"),
+	preload("res://textures/backgrounds/tables_normal.jpg"),
+	preload("res://textures/backgrounds/tables_fancy.jpg"),
+	preload("res://textures/backgrounds/tables_extravagant.jpg")
 ]
 
 var FloatingTextScene = preload("res://FloatingText.tscn")
@@ -57,8 +58,9 @@ func _on_pizzas_ready_changed(amount):
 
 func _on_level_changed(level):
 	# Update visual background
-	if level < LEVEL_COLORS.size():
-		background.color = LEVEL_COLORS[level]
+	if level < LEVEL_TEXTURES.size():
+		background.texture = LEVEL_TEXTURES[level]
+		background.modulate = Color(1, 1, 1, 1)
 	_update_buttons()
 
 func _update_buttons():
