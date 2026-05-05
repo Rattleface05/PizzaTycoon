@@ -15,8 +15,18 @@ func _ready():
 	Global.pizzas_ready_changed.connect(_on_pizzas_ready_changed)
 	_on_pizzas_ready_changed(Global.pizzas_ready)
 	
+	make_pizza_button.text = "Prepare Pizza [SPACE]"
+	to_pizzeria_button.text = "Go to Pizzeria [D] ->"
+	
 	progress_bar.max_value = clicks_needed
 	progress_bar.value = 0
+
+func _unhandled_input(event):
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_SPACE:
+			_on_make_pizza_pressed()
+		elif event.keycode == KEY_D:
+			_on_to_pizzeria_pressed()
 
 func _on_make_pizza_pressed():
 	current_clicks += 1
@@ -28,7 +38,7 @@ func _on_make_pizza_pressed():
 		current_clicks = 0
 		# Reset bar with a slight delay so player sees it full
 		tween.tween_property(progress_bar, "value", 0.0, 0.2).set_delay(0.1)
-		_spawn_floating_text("Pizza Gata!", make_pizza_button.global_position)
+		_spawn_floating_text("Pizza Ready!", make_pizza_button.global_position)
 
 func _spawn_floating_text(text: String, pos: Vector2):
 	if FloatingTextScene:
@@ -38,7 +48,7 @@ func _spawn_floating_text(text: String, pos: Vector2):
 		add_child(ft)
 
 func _on_to_pizzeria_pressed():
-	get_tree().change_scene_to_file("res://Pizzeria.tscn")
+	Global.change_scene("res://Pizzeria.tscn")
 
 func _on_pizzas_ready_changed(amount):
 	pizzas_label.text = "Pizzas ready: " + str(amount)
