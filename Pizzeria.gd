@@ -16,11 +16,13 @@ var LEVEL_TEXTURES = [
 ]
 
 var FloatingTextScene = preload("res://FloatingText.tscn")
+var CustomerScene = preload("res://Customer.tscn")
 
 var auto_sell_timer: float = 0.0
 const AUTO_SELL_DELAY: float = 0.3
 const AUTO_SELL_INTERVAL: float = 0.1
 var is_selling_held: bool = false
+var current_customer = null
 
 func _ready():
 	sell_button.pressed.connect(_on_sell_pressed)
@@ -37,6 +39,9 @@ func _ready():
 	_on_money_changed(Global.money)
 	_on_pizzas_ready_changed(Global.pizzas_ready)
 	_on_level_changed(Global.upgrade_level)
+	
+	# Asteptam putin inainte sa apara primul client
+	call_deferred("_spawn_customer")
 
 func _unhandled_input(event):
 	if event is InputEventKey and event.pressed and not event.echo:
@@ -70,6 +75,29 @@ func _on_sell_pressed():
 		var price = Global.sell_pizza()
 		Global.money += price
 		_spawn_floating_text("+$" + str(price), sell_button.global_position)
+		
+		if current_customer != null and is_instance_valid(current_customer):
+			current_customer.leave()
+		
+		Global.current_customer_texture_index = -1
+		Global.current_customer_order_index = -1
+		
+		_spawn_customer()
+
+func _spawn_customer():
+	if CustomerScene:
+		var c = CustomerScene.instantiate()
+		var viewport_size = get_viewport_rect().size
+		var target_x = viewport_size.x - 300
+		var target_y = viewport_size.y - 50 # 50px deasupra marginii de jos
+		
+		# Daca marimea ecranului nu e citita bine, punem valori statice sigure
+		if target_x < 400: target_x = 850
+		if target_y < 300: target_y = 600
+		
+		c.global_position = Vector2(target_x, target_y)
+		add_child(c)
+		current_customer = c
 
 func _on_upgrade_pressed():
 	if Global.upgrade_level < UPGRADE_PRICES.size():

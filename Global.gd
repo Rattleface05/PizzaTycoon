@@ -4,6 +4,9 @@ signal money_changed(new_amount)
 signal pizzas_ready_changed(new_amount)
 signal level_changed(new_level)
 
+var current_customer_texture_index: int = -1
+var current_customer_order_index: int = -1
+
 var money: float = 0.0:
 	set(value):
 		money = value
