@@ -7,6 +7,7 @@ extends Control
 
 var clicks_needed: int = 5
 var current_clicks: int = 0
+var FloatingTextScene = preload("res://FloatingText.tscn")
 
 func _ready():
 	make_pizza_button.pressed.connect(_on_make_pizza_pressed)
@@ -19,11 +20,22 @@ func _ready():
 
 func _on_make_pizza_pressed():
 	current_clicks += 1
-	progress_bar.value = current_clicks
+	var tween = create_tween()
+	tween.tween_property(progress_bar, "value", float(current_clicks), 0.1)
+	
 	if current_clicks >= clicks_needed:
 		Global.pizzas_ready += 1
 		current_clicks = 0
-		progress_bar.value = 0
+		# Reset bar with a slight delay so player sees it full
+		tween.tween_property(progress_bar, "value", 0.0, 0.2).set_delay(0.1)
+		_spawn_floating_text("Pizza Gata!", make_pizza_button.global_position)
+
+func _spawn_floating_text(text: String, pos: Vector2):
+	if FloatingTextScene:
+		var ft = FloatingTextScene.instantiate()
+		ft.global_position = pos + Vector2(randf_range(0, 100), randf_range(-50, 50))
+		ft.get_node("Label").text = text
+		add_child(ft)
 
 func _on_to_pizzeria_pressed():
 	get_tree().change_scene_to_file("res://Pizzeria.tscn")

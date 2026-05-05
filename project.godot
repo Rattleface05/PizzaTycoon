@@ -17,12 +17,3 @@ config/features=PackedStringArray("4.6", "Forward Plus")
 [autoload]
 
 Global="*res://Global.gd"
-
-[display]
-
-window/size/viewport_width=1152
-window/size/viewport_height=648
-
-[rendering]
-
-renderer/rendering_method="forward_plus"
