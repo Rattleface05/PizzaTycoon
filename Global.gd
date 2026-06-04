@@ -17,23 +17,30 @@ var pizzas_ready: int = 0:
 		pizzas_ready = value
 		pizzas_ready_changed.emit(pizzas_ready)
 
-var ready_pizzas_prices: Array[float] = []
-
 func add_pizza(price: float):
-	ready_pizzas_prices.append(price)
-	pizzas_ready = ready_pizzas_prices.size()
+	pizzas_ready += 1
 
 func sell_pizza() -> float:
-	if ready_pizzas_prices.size() > 0:
-		var price = ready_pizzas_prices.pop_front()
-		pizzas_ready = ready_pizzas_prices.size()
-		return price
+	if pizzas_ready > 0:
+		pizzas_ready -= 1
+		return get_current_pizza_price()
 	return 0.0
 
 func get_next_pizza_price() -> float:
-	if ready_pizzas_prices.size() > 0:
-		return ready_pizzas_prices[0]
-	return 0.0
+	return get_current_pizza_price()
+
+func format_number(value: float) -> String:
+	if value < 1000.0:
+		return str(snapped(value, 0.01))
+	
+	var suffixes = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc"]
+	var tier = floor(log(value) / log(1000.0))
+	if tier >= suffixes.size():
+		return "%.2e" % value
+		
+	var scale = pow(1000.0, tier)
+	var formatted = value / scale
+	return "%.2f%s" % [formatted, suffixes[tier]]
 
 var upgrade_level: int = 0:
 	set(value):
@@ -43,18 +50,22 @@ var upgrade_level: int = 0:
 var transition_layer: CanvasLayer
 var color_rect: ColorRect
 var is_transitioning: bool = false
+var active_office_tab: int = 0
 
 func _ready():
+	# Create canvas layer for transition
 	transition_layer = CanvasLayer.new()
-	transition_layer.layer = 100
+	transition_layer.layer = 100 # Draw above everything
+	add_child(transition_layer)
 	
 	color_rect = ColorRect.new()
-	color_rect.color = Color(0, 0, 0, 0)
+	color_rect.color = Color(0, 0, 0, 0) # Start transparent
+	color_rect.anchors_preset = Control.PRESET_FULL_RECT
 	color_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	
 	transition_layer.add_child(color_rect)
-	add_child(transition_layer)
+	
+	color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	is_transitioning = false
 
 func change_scene(path: String):
 	if is_transitioning:
@@ -75,3 +86,154 @@ func change_scene(path: String):
 	
 	color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	is_transitioning = false
+
+const SAVE_PATH = "user://pizza_tycoon_save.dat"
+
+func save_game():
+	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	if file:
+		var save_data = {
+			"money": money,
+			"pizzas_ready": pizzas_ready,
+			"upgrade_level": upgrade_level,
+			"hired_chefs": hired_chefs,
+			"hired_cashiers": hired_cashiers,
+			"unlocked_recipes": unlocked_recipes,
+			"active_recipe_index": active_recipe_index,
+			"active_office_tab": active_office_tab
+		}
+		file.store_var(save_data)
+		file.close()
+
+func load_game() -> bool:
+	if not FileAccess.file_exists(SAVE_PATH):
+		return false
+	var file = FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if file:
+		var save_data = file.get_var()
+		file.close()
+		if save_data is Dictionary:
+			if save_data.has("money"): money = save_data["money"]
+			if save_data.has("pizzas_ready"): pizzas_ready = save_data["pizzas_ready"]
+			if save_data.has("upgrade_level"): upgrade_level = save_data["upgrade_level"]
+			if save_data.has("hired_chefs"): hired_chefs = save_data["hired_chefs"]
+			if save_data.has("hired_cashiers"): hired_cashiers = save_data["hired_cashiers"]
+			if save_data.has("unlocked_recipes"): unlocked_recipes = save_data["unlocked_recipes"]
+			if save_data.has("active_recipe_index"): active_recipe_index = save_data["active_recipe_index"]
+			if save_data.has("active_office_tab"): active_office_tab = save_data["active_office_tab"]
+			
+			# Emit updates to make sure UI is aware of new values
+			money_changed.emit(money)
+			pizzas_ready_changed.emit(pizzas_ready)
+			level_changed.emit(upgrade_level)
+			chefs_updated.emit()
+			recipes_updated.emit()
+			cashiers_updated.emit()
+			return true
+	return false
+
+func has_save_file() -> bool:
+	return FileAccess.file_exists(SAVE_PATH)
+
+func reset_game():
+	money = 0.0
+	pizzas_ready = 0
+	upgrade_level = 0
+	hired_chefs = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+	hired_cashiers = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+	unlocked_recipes = [0]
+	active_recipe_index = 0
+	active_office_tab = 0
+	
+	# Emit updates
+	money_changed.emit(money)
+	pizzas_ready_changed.emit(pizzas_ready)
+	level_changed.emit(upgrade_level)
+	chefs_updated.emit()
+	recipes_updated.emit()
+	cashiers_updated.emit()
+
+signal chefs_updated()
+
+const CHEFS = [
+	{ "name": "Junior Chef", "base_cost": 100.0, "cook_rate": 0.2 },
+	{ "name": "Senior Chef", "base_cost": 600.0, "cook_rate": 0.8 },
+	{ "name": "Pizza Master", "base_cost": 4000.0, "cook_rate": 3.0 },
+	{ "name": "Executive Chef", "base_cost": 30000.0, "cook_rate": 12.0 },
+	{ "name": "Kitchen Manager", "base_cost": 250000.0, "cook_rate": 50.0 },
+	{ "name": "Pizza Legend", "base_cost": 2000000.0, "cook_rate": 200.0 },
+	{ "name": "Pizza Deity", "base_cost": 20000000.0, "cook_rate": 800.0 },
+	{ "name": "Cosmic Cook-Bot", "base_cost": 250000000.0, "cook_rate": 3000.0 },
+	{ "name": "Chef Singularity", "base_cost": 3500000000.0, "cook_rate": 12000.0 }
+]
+
+var hired_chefs: Array[int] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+var _auto_cook_progress: float = 0.0
+var _auto_sell_progress: float = 0.0
+
+signal recipes_updated()
+signal cashiers_updated()
+
+const RECIPES = [
+	{ "name": "Margherita", "buy_cost": 0.0, "pizza_value": 5.0 },
+	{ "name": "Pepperoni", "buy_cost": 200.0, "pizza_value": 10.0 },
+	{ "name": "Quattro Formaggi", "buy_cost": 1200.0, "pizza_value": 22.0 },
+	{ "name": "Carnivora", "buy_cost": 8000.0, "pizza_value": 45.0 },
+	{ "name": "Supreme Master", "buy_cost": 50000.0, "pizza_value": 95.0 },
+	{ "name": "Galactic Pizza", "buy_cost": 300000.0, "pizza_value": 200.0 },
+	{ "name": "Pizza Singularity", "buy_cost": 2000000.0, "pizza_value": 450.0 },
+	{ "name": "Pizza Omega", "buy_cost": 15000000.0, "pizza_value": 1000.0 },
+	{ "name": "Pizza Universe", "buy_cost": 120000000.0, "pizza_value": 2400.0 },
+	{ "name": "Pizza Multiverse", "buy_cost": 1000000000.0, "pizza_value": 6000.0 }
+]
+
+const CASHIERS = [
+	{ "name": "Junior Cashier", "base_cost": 150.0, "sell_rate": 0.3 },
+	{ "name": "Senior Cashier", "base_cost": 900.0, "sell_rate": 1.2 },
+	{ "name": "Selling Machine", "base_cost": 6000.0, "sell_rate": 5.0 },
+	{ "name": "Cashier Overlord", "base_cost": 45000.0, "sell_rate": 20.0 },
+	{ "name": "Hyper-Vender", "base_cost": 350000.0, "sell_rate": 80.0 },
+	{ "name": "Selling Singularity", "base_cost": 3000000.0, "sell_rate": 300.0 },
+	{ "name": "Cosmic Merchant", "base_cost": 25000000.0, "sell_rate": 1200.0 },
+	{ "name": "Selling Portal", "base_cost": 300000000.0, "sell_rate": 5000.0 },
+	{ "name": "Mercenary of Sales", "base_cost": 4500000000.0, "sell_rate": 20000.0 }
+]
+
+var hired_cashiers: Array[int] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+var unlocked_recipes: Array[int] = [0]
+var active_recipe_index: int = 0:
+	set(value):
+		active_recipe_index = value
+		recipes_updated.emit()
+
+func get_current_pizza_price() -> float:
+	if active_recipe_index >= 0 and active_recipe_index < RECIPES.size():
+		return RECIPES[active_recipe_index]["pizza_value"]
+	return 5.0
+
+func _process(delta):
+	var total_rate = 0.0
+	for i in range(CHEFS.size()):
+		total_rate += hired_chefs[i] * CHEFS[i]["cook_rate"]
+	
+	if total_rate > 0.0:
+		_auto_cook_progress += total_rate * delta
+		if _auto_cook_progress >= 1.0:
+			var completed_pizzas = floor(_auto_cook_progress)
+			pizzas_ready += int(completed_pizzas)
+			_auto_cook_progress -= completed_pizzas
+			
+	# Auto-sell logic
+	var total_sell_rate = 0.0
+	for i in range(CASHIERS.size()):
+		total_sell_rate += hired_cashiers[i] * CASHIERS[i]["sell_rate"]
+		
+	if total_sell_rate > 0.0 and pizzas_ready > 0:
+		_auto_sell_progress += total_sell_rate * delta
+		if _auto_sell_progress >= 1.0:
+			var to_sell = min(floor(_auto_sell_progress), pizzas_ready)
+			if to_sell > 0:
+				pizzas_ready -= int(to_sell)
+				money += to_sell * get_current_pizza_price()
+			_auto_sell_progress -= floor(_auto_sell_progress)

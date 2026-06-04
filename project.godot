@@ -11,9 +11,10 @@ config_version=5
 [application]
 
 config/name="Pizza Tycoon"
-run/main_scene="res://Kitchen.tscn"
+run/main_scene="res://MainMenu.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 
 [autoload]
 
 Global="*res://Global.gd"
+PauseMenu="*res://PauseMenu.tscn"

@@ -7,7 +7,7 @@ extends Control
 @onready var upgrade_button = $VBoxContainer/UpgradeButton
 @onready var to_kitchen_button = $ToKitchenButton
 
-const UPGRADE_PRICES = [20.0, 100.0, 500.0]
+const UPGRADE_PRICES = [1500.0, 40000.0, 1000000.0]
 var LEVEL_TEXTURES = [
 	preload("res://textures/backgrounds/tables_poor.jpg"),
 	preload("res://textures/backgrounds/tables_normal.jpg"),
@@ -74,7 +74,7 @@ func _on_sell_pressed():
 	if Global.pizzas_ready > 0:
 		var price = Global.sell_pizza()
 		Global.money += price
-		_spawn_floating_text("+$" + str(price), sell_button.global_position)
+		_spawn_floating_text("+$" + Global.format_number(price), sell_button.global_position)
 		
 		if current_customer != null and is_instance_valid(current_customer):
 			current_customer.leave()
@@ -110,7 +110,7 @@ func _on_to_kitchen_pressed():
 	Global.change_scene("res://Kitchen.tscn")
 
 func _on_money_changed(amount):
-	money_label.text = "Money: $" + str(amount)
+	money_label.text = "Money: $" + Global.format_number(amount)
 	_update_buttons()
 
 func _on_pizzas_ready_changed(amount):
@@ -127,13 +127,13 @@ func _on_level_changed(level):
 func _update_buttons():
 	sell_button.disabled = Global.pizzas_ready <= 0
 	if Global.pizzas_ready > 0:
-		sell_button.text = "Sell Pizza [SPACE] ($" + str(Global.get_next_pizza_price()) + ")"
+		sell_button.text = "Sell Pizza [SPACE] ($" + Global.format_number(Global.get_next_pizza_price()) + ")"
 	else:
 		sell_button.text = "Sell Pizza [SPACE]"
 	
 	if Global.upgrade_level < UPGRADE_PRICES.size():
 		var cost = UPGRADE_PRICES[Global.upgrade_level]
-		upgrade_button.text = "Upgrade Pizzeria [E] ($" + str(cost) + ")"
+		upgrade_button.text = "Upgrade Pizzeria [E] ($" + Global.format_number(cost) + ")"
 		upgrade_button.disabled = Global.money < cost
 	else:
 		upgrade_button.text = "MAX LEVEL REACHED"
