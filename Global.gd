@@ -87,6 +87,72 @@ func change_scene(path: String):
 	color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	is_transitioning = false
 
+const SAVE_PATH = "user://pizza_tycoon_save.dat"
+
+func save_game():
+	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	if file:
+		var save_data = {
+			"money": money,
+			"pizzas_ready": pizzas_ready,
+			"upgrade_level": upgrade_level,
+			"hired_chefs": hired_chefs,
+			"hired_cashiers": hired_cashiers,
+			"unlocked_recipes": unlocked_recipes,
+			"active_recipe_index": active_recipe_index,
+			"active_office_tab": active_office_tab
+		}
+		file.store_var(save_data)
+		file.close()
+
+func load_game() -> bool:
+	if not FileAccess.file_exists(SAVE_PATH):
+		return false
+	var file = FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if file:
+		var save_data = file.get_var()
+		file.close()
+		if save_data is Dictionary:
+			if save_data.has("money"): money = save_data["money"]
+			if save_data.has("pizzas_ready"): pizzas_ready = save_data["pizzas_ready"]
+			if save_data.has("upgrade_level"): upgrade_level = save_data["upgrade_level"]
+			if save_data.has("hired_chefs"): hired_chefs = save_data["hired_chefs"]
+			if save_data.has("hired_cashiers"): hired_cashiers = save_data["hired_cashiers"]
+			if save_data.has("unlocked_recipes"): unlocked_recipes = save_data["unlocked_recipes"]
+			if save_data.has("active_recipe_index"): active_recipe_index = save_data["active_recipe_index"]
+			if save_data.has("active_office_tab"): active_office_tab = save_data["active_office_tab"]
+			
+			# Emit updates to make sure UI is aware of new values
+			money_changed.emit(money)
+			pizzas_ready_changed.emit(pizzas_ready)
+			level_changed.emit(upgrade_level)
+			chefs_updated.emit()
+			recipes_updated.emit()
+			cashiers_updated.emit()
+			return true
+	return false
+
+func has_save_file() -> bool:
+	return FileAccess.file_exists(SAVE_PATH)
+
+func reset_game():
+	money = 0.0
+	pizzas_ready = 0
+	upgrade_level = 0
+	hired_chefs = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+	hired_cashiers = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+	unlocked_recipes = [0]
+	active_recipe_index = 0
+	active_office_tab = 0
+	
+	# Emit updates
+	money_changed.emit(money)
+	pizzas_ready_changed.emit(pizzas_ready)
+	level_changed.emit(upgrade_level)
+	chefs_updated.emit()
+	recipes_updated.emit()
+	cashiers_updated.emit()
+
 signal chefs_updated()
 
 const CHEFS = [

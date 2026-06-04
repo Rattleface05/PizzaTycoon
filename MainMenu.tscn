@@ -131,9 +131,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -180.0
-offset_top = -60.0
+offset_top = -100.0
 offset_right = 180.0
-offset_bottom = 200.0
+offset_bottom = 220.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_card")
@@ -143,7 +143,7 @@ layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 1
 
-[node name="StartButton" type="Button" parent="MainPanel/PanelContainer/VBoxContainer"]
+[node name="NewGameButton" type="Button" parent="MainPanel/PanelContainer/VBoxContainer"]
 custom_minimum_size = Vector2(300, 55)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -152,7 +152,18 @@ theme_override_font_sizes/font_size = 26
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
-text = "Start Game"
+text = "New Game"
+
+[node name="ContinueButton" type="Button" parent="MainPanel/PanelContainer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 55)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+text = "Continue"
 
 [node name="SettingsButton" type="Button" parent="MainPanel/PanelContainer/VBoxContainer"]
 custom_minimum_size = Vector2(300, 55)

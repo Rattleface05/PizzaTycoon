@@ -3,7 +3,8 @@ extends Control
 @onready var main_panel = $MainPanel
 @onready var settings_panel = $SettingsPanel
 
-@onready var start_button = $MainPanel/PanelContainer/VBoxContainer/StartButton
+@onready var new_game_button = $MainPanel/PanelContainer/VBoxContainer/NewGameButton
+@onready var continue_button = $MainPanel/PanelContainer/VBoxContainer/ContinueButton
 @onready var settings_button = $MainPanel/PanelContainer/VBoxContainer/SettingsButton
 @onready var quit_button = $MainPanel/PanelContainer/VBoxContainer/QuitButton
 
@@ -40,7 +41,9 @@ func _ready():
 		background_texture.texture = bg_frames[0]
 	
 	# Connect buttons
-	start_button.pressed.connect(_on_start_pressed)
+	new_game_button.pressed.connect(_on_new_game_pressed)
+	continue_button.pressed.connect(_on_continue_pressed)
+	continue_button.disabled = not Global.has_save_file()
 	settings_button.pressed.connect(_on_settings_pressed)
 	quit_button.pressed.connect(_on_quit_pressed)
 	back_button.pressed.connect(_on_back_pressed)
@@ -77,8 +80,13 @@ func _process(delta):
 			bg_current_frame = (bg_current_frame + 1) % bg_frames.size()
 			background_texture.texture = bg_frames[bg_current_frame]
 
-func _on_start_pressed():
+func _on_new_game_pressed():
+	Global.reset_game()
 	get_tree().change_scene_to_file("res://Kitchen.tscn")
+
+func _on_continue_pressed():
+	if Global.load_game():
+		get_tree().change_scene_to_file("res://Kitchen.tscn")
 
 func _on_settings_pressed():
 	main_panel.visible = false
