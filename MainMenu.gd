@@ -7,7 +7,7 @@ extends Control
 @onready var settings_button = $MainPanel/PanelContainer/VBoxContainer/SettingsButton
 @onready var quit_button = $MainPanel/PanelContainer/VBoxContainer/QuitButton
 
-@onready var mute_checkbox = $SettingsPanel/PanelContainer/VBoxContainer/MuteContainer/MuteCheckBox
+@onready var mute_checkbox = $SettingsPanel/PanelContainer/VBoxContainer/MuteContainer/CheckBoxBorder/MuteCheckBox
 @onready var resolution_option = $SettingsPanel/PanelContainer/VBoxContainer/ResolutionContainer/ResolutionOptionButton
 @onready var back_button = $SettingsPanel/PanelContainer/BackButton
 

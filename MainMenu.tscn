@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://menu123"]
+[gd_scene load_steps=7 format=3 uid="uid://menu123"]
 
 [ext_resource type="Script" path="res://MainMenu.gd" id="1_1"]
 
@@ -56,6 +56,18 @@ corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_checkbox_border"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -217,10 +229,14 @@ theme_override_font_sizes/font_size = 24
 text = "Mute Audio:"
 vertical_alignment = 1
 
-[node name="MuteCheckBox" type="CheckBox" parent="SettingsPanel/PanelContainer/VBoxContainer/MuteContainer"]
+[node name="CheckBoxBorder" type="PanelContainer" parent="SettingsPanel/PanelContainer/VBoxContainer/MuteContainer"]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_checkbox_border")
 scale = Vector2(1.5, 1.5)
 pivot_offset = Vector2(0, 8)
+
+[node name="MuteCheckBox" type="CheckBox" parent="SettingsPanel/PanelContainer/VBoxContainer/MuteContainer/CheckBoxBorder"]
+layout_mode = 2
 
 [node name="ResolutionContainer" type="HBoxContainer" parent="SettingsPanel/PanelContainer/VBoxContainer"]
 layout_mode = 2

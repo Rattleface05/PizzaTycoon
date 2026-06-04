@@ -75,3 +75,36 @@ func change_scene(path: String):
 	
 	color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	is_transitioning = false
+
+signal staff_changed()
+
+var junior_chefs: int = 0:
+	set(value):
+		junior_chefs = value
+		staff_changed.emit()
+
+var senior_chefs: int = 0:
+	set(value):
+		senior_chefs = value
+		staff_changed.emit()
+
+var pizza_masters: int = 0:
+	set(value):
+		pizza_masters = value
+		staff_changed.emit()
+
+var _auto_cook_progress: float = 0.0
+
+func _process(delta):
+	var junior_rate = junior_chefs * 0.2
+	var senior_rate = senior_chefs * 1.0
+	var master_rate = pizza_masters * 5.0
+	var total_rate = junior_rate + senior_rate + master_rate
+	
+	if total_rate > 0.0:
+		_auto_cook_progress += total_rate * delta
+		if _auto_cook_progress >= 1.0:
+			var completed_pizzas = floor(_auto_cook_progress)
+			for i in range(int(completed_pizzas)):
+				add_pizza(10.0)
+			_auto_cook_progress -= completed_pizzas
