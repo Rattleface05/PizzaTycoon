@@ -114,8 +114,10 @@ var pizza_deities: int = 0:
 		staff_changed.emit()
 
 var _auto_cook_progress: float = 0.0
+var _auto_sell_progress: float = 0.0
 
 signal recipes_updated()
+signal cashiers_updated()
 
 const RECIPES = [
 	{ "name": "Margherita", "buy_cost": 0.0, "pizza_value": 10.0 },
@@ -127,6 +129,17 @@ const RECIPES = [
 	{ "name": "Pizza Singularity", "buy_cost": 2000000.0, "pizza_value": 60000.0 }
 ]
 
+const CASHIERS = [
+	{ "name": "Junior Cashier", "base_cost": 80.0, "sell_rate": 0.4 },
+	{ "name": "Senior Cashier", "base_cost": 400.0, "sell_rate": 2.0 },
+	{ "name": "Selling Machine", "base_cost": 2000.0, "sell_rate": 10.0 },
+	{ "name": "Cashier Overlord", "base_cost": 10000.0, "sell_rate": 50.0 },
+	{ "name": "Hyper-Vender", "base_cost": 60000.0, "sell_rate": 250.0 },
+	{ "name": "Selling Singularity", "base_cost": 400000.0, "sell_rate": 1200.0 },
+	{ "name": "Cosmic Merchant", "base_cost": 2500000.0, "sell_rate": 6000.0 }
+]
+
+var hired_cashiers: Array[int] = [0, 0, 0, 0, 0, 0, 0]
 var unlocked_recipes: Array[int] = [0]
 var active_recipe_index: int = 0:
 	set(value):
@@ -156,3 +169,17 @@ func _process(delta):
 			for i in range(int(completed_pizzas)):
 				add_pizza(get_current_pizza_price())
 			_auto_cook_progress -= completed_pizzas
+			
+	# Auto-sell logic
+	var total_sell_rate = 0.0
+	for i in range(CASHIERS.size()):
+		total_sell_rate += hired_cashiers[i] * CASHIERS[i]["sell_rate"]
+		
+	if total_sell_rate > 0.0 and pizzas_ready > 0:
+		_auto_sell_progress += total_sell_rate * delta
+		if _auto_sell_progress >= 1.0:
+			var to_sell = min(floor(_auto_sell_progress), pizzas_ready)
+			if to_sell > 0:
+				pizzas_ready -= int(to_sell)
+				money += to_sell * get_current_pizza_price()
+			_auto_sell_progress -= floor(_auto_sell_progress)
