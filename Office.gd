@@ -4,6 +4,7 @@ extends Control
 @onready var recipe_list = $LaptopScreen/MarginContainer/VBoxContainer/ScrollContainer/RecipeList
 @onready var money_label = $LaptopScreen/MarginContainer/VBoxContainer/Header/MoneyLabel
 @onready var recipes_tab_button = $LaptopScreen/MarginContainer/VBoxContainer/TabBar/RecipesTabButton
+@onready var chefs_tab_button = $LaptopScreen/MarginContainer/VBoxContainer/TabBar/ChefsTabButton
 @onready var cashiers_tab_button = $LaptopScreen/MarginContainer/VBoxContainer/TabBar/CashiersTabButton
 
 var style_normal: StyleBoxFlat
@@ -12,16 +13,18 @@ var style_pressed: StyleBoxFlat
 var style_tab_active: StyleBoxFlat
 var style_tab_inactive: StyleBoxFlat
 
-var active_tab: int = 0 # 0 = Recipes, 1 = Cashiers
+var active_tab: int = 0 # 0 = Recipes, 1 = Chefs, 2 = Cashiers
 
 func _ready():
 	to_kitchen_button.pressed.connect(_on_to_kitchen_pressed)
 	recipes_tab_button.pressed.connect(func(): _on_tab_changed(0))
-	cashiers_tab_button.pressed.connect(func(): _on_tab_changed(1))
+	chefs_tab_button.pressed.connect(func(): _on_tab_changed(1))
+	cashiers_tab_button.pressed.connect(func(): _on_tab_changed(2))
 	
 	# Connect global updates
 	Global.money_changed.connect(_on_money_changed)
 	Global.recipes_updated.connect(_update_recipe_list)
+	Global.chefs_updated.connect(_update_recipe_list)
 	Global.cashiers_updated.connect(_update_recipe_list)
 	
 	# Build styles
@@ -69,19 +72,29 @@ func _on_tab_changed(tab_index: int):
 	_update_recipe_list()
 
 func _update_tab_buttons_appearance():
+	# Reset styles for all three buttons first
+	recipes_tab_button.add_theme_stylebox_override("normal", style_tab_inactive)
+	recipes_tab_button.add_theme_stylebox_override("hover", style_hover)
+	recipes_tab_button.add_theme_stylebox_override("pressed", style_pressed)
+	
+	chefs_tab_button.add_theme_stylebox_override("normal", style_tab_inactive)
+	chefs_tab_button.add_theme_stylebox_override("hover", style_hover)
+	chefs_tab_button.add_theme_stylebox_override("pressed", style_pressed)
+	
+	cashiers_tab_button.add_theme_stylebox_override("normal", style_tab_inactive)
+	cashiers_tab_button.add_theme_stylebox_override("hover", style_hover)
+	cashiers_tab_button.add_theme_stylebox_override("pressed", style_pressed)
+	
+	# Override active tab style
 	if active_tab == 0:
 		recipes_tab_button.add_theme_stylebox_override("normal", style_tab_active)
 		recipes_tab_button.add_theme_stylebox_override("hover", style_tab_active)
 		recipes_tab_button.add_theme_stylebox_override("pressed", style_tab_active)
-		
-		cashiers_tab_button.add_theme_stylebox_override("normal", style_tab_inactive)
-		cashiers_tab_button.add_theme_stylebox_override("hover", style_hover)
-		cashiers_tab_button.add_theme_stylebox_override("pressed", style_pressed)
-	else:
-		recipes_tab_button.add_theme_stylebox_override("normal", style_tab_inactive)
-		recipes_tab_button.add_theme_stylebox_override("hover", style_hover)
-		recipes_tab_button.add_theme_stylebox_override("pressed", style_pressed)
-		
+	elif active_tab == 1:
+		chefs_tab_button.add_theme_stylebox_override("normal", style_tab_active)
+		chefs_tab_button.add_theme_stylebox_override("hover", style_tab_active)
+		chefs_tab_button.add_theme_stylebox_override("pressed", style_tab_active)
+	elif active_tab == 2:
 		cashiers_tab_button.add_theme_stylebox_override("normal", style_tab_active)
 		cashiers_tab_button.add_theme_stylebox_override("hover", style_tab_active)
 		cashiers_tab_button.add_theme_stylebox_override("pressed", style_tab_active)
@@ -145,7 +158,53 @@ func _update_recipe_list():
 				
 			row.add_child(action_btn)
 			recipe_list.add_child(row)
-	else:
+			
+	elif active_tab == 1:
+		# Build new chef rows
+		for i in range(Global.CHEFS.size()):
+			var chef = Global.CHEFS[i]
+			var hired_count = Global.hired_chefs[i]
+			var cost = chef["base_cost"] * pow(1.15, hired_count)
+			
+			var row = HBoxContainer.new()
+			row.add_theme_constant_override("separation", 15)
+			
+			# Info VBox
+			var info_vbox = VBoxContainer.new()
+			info_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			
+			var name_lbl = Label.new()
+			name_lbl.text = chef["name"] + " (Hired: " + str(hired_count) + ")"
+			name_lbl.add_theme_font_size_override("font_size", 16)
+			name_lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
+			name_lbl.add_theme_constant_override("outline_size", 4)
+			info_vbox.add_child(name_lbl)
+			
+			var desc_lbl = Label.new()
+			desc_lbl.text = "Cook Speed: +" + str(chef["cook_rate"]) + " pizzas/s"
+			desc_lbl.add_theme_font_size_override("font_size", 12)
+			desc_lbl.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8, 1))
+			info_vbox.add_child(desc_lbl)
+			
+			row.add_child(info_vbox)
+			
+			# Action Button
+			var action_btn = Button.new()
+			action_btn.custom_minimum_size = Vector2(160, 45)
+			action_btn.add_theme_font_size_override("font_size", 13)
+			
+			action_btn.add_theme_stylebox_override("normal", style_normal)
+			action_btn.add_theme_stylebox_override("hover", style_hover)
+			action_btn.add_theme_stylebox_override("pressed", style_pressed)
+			
+			action_btn.text = "Hire: $" + str(snapped(cost, 0.01))
+			action_btn.disabled = (Global.money < cost)
+			action_btn.pressed.connect(func(): _on_hire_chef(i, cost))
+			
+			row.add_child(action_btn)
+			recipe_list.add_child(row)
+			
+	elif active_tab == 2:
 		# Build new cashier rows
 		for i in range(Global.CASHIERS.size()):
 			var cashier = Global.CASHIERS[i]
@@ -198,6 +257,12 @@ func _on_buy_recipe(index: int, cost: float):
 		Global.money -= cost
 		Global.unlocked_recipes.append(index)
 		Global.active_recipe_index = index
+
+func _on_hire_chef(index: int, cost: float):
+	if Global.money >= cost:
+		Global.money -= cost
+		Global.hired_chefs[index] += 1
+		Global.chefs_updated.emit()
 
 func _on_hire_cashier(index: int, cost: float):
 	if Global.money >= cost:

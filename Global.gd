@@ -76,42 +76,19 @@ func change_scene(path: String):
 	color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	is_transitioning = false
 
-signal staff_changed()
+signal chefs_updated()
 
-var junior_chefs: int = 0:
-	set(value):
-		junior_chefs = value
-		staff_changed.emit()
+const CHEFS = [
+	{ "name": "Junior Chef", "base_cost": 50.0, "cook_rate": 0.2 },
+	{ "name": "Senior Chef", "base_cost": 250.0, "cook_rate": 1.0 },
+	{ "name": "Pizza Master", "base_cost": 1200.0, "cook_rate": 5.0 },
+	{ "name": "Executive Chef", "base_cost": 6000.0, "cook_rate": 25.0 },
+	{ "name": "Kitchen Manager", "base_cost": 35000.0, "cook_rate": 120.0 },
+	{ "name": "Pizza Legend", "base_cost": 200000.0, "cook_rate": 600.0 },
+	{ "name": "Pizza Deity", "base_cost": 1250000.0, "cook_rate": 3500.0 }
+]
 
-var senior_chefs: int = 0:
-	set(value):
-		senior_chefs = value
-		staff_changed.emit()
-
-var pizza_masters: int = 0:
-	set(value):
-		pizza_masters = value
-		staff_changed.emit()
-
-var executive_chefs: int = 0:
-	set(value):
-		executive_chefs = value
-		staff_changed.emit()
-
-var kitchen_managers: int = 0:
-	set(value):
-		kitchen_managers = value
-		staff_changed.emit()
-
-var pizza_legends: int = 0:
-	set(value):
-		pizza_legends = value
-		staff_changed.emit()
-
-var pizza_deities: int = 0:
-	set(value):
-		pizza_deities = value
-		staff_changed.emit()
+var hired_chefs: Array[int] = [0, 0, 0, 0, 0, 0, 0]
 
 var _auto_cook_progress: float = 0.0
 var _auto_sell_progress: float = 0.0
@@ -152,15 +129,9 @@ func get_current_pizza_price() -> float:
 	return 10.0
 
 func _process(delta):
-	var junior_rate = junior_chefs * 0.2
-	var senior_rate = senior_chefs * 1.0
-	var master_rate = pizza_masters * 5.0
-	var executive_rate = executive_chefs * 25.0
-	var manager_rate = kitchen_managers * 120.0
-	var legend_rate = pizza_legends * 600.0
-	var deity_rate = pizza_deities * 3500.0
-	
-	var total_rate = junior_rate + senior_rate + master_rate + executive_rate + manager_rate + legend_rate + deity_rate
+	var total_rate = 0.0
+	for i in range(CHEFS.size()):
+		total_rate += hired_chefs[i] * CHEFS[i]["cook_rate"]
 	
 	if total_rate > 0.0:
 		_auto_cook_progress += total_rate * delta
