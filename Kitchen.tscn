@@ -148,6 +148,27 @@ grow_vertical = 0
 theme_override_font_sizes/font_size = 24
 text = "Go to Pizzeria ->"
 
+[node name="ToOfficeButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 0.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = -100.0
+offset_right = 280.0
+offset_bottom = -32.0
+grow_horizontal = 1
+grow_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+text = "<- Go to Office [A]"
+
 [node name="StaffPanel" type="PanelContainer" parent="."]
 layout_mode = 1
 anchors_preset = 1
