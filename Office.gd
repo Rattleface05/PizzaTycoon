@@ -1,8 +1,8 @@
 extends Control
 
 @onready var to_kitchen_button = $ToKitchenButton
-@onready var recipe_list = $LaptopScreen/VBoxContainer/ScrollContainer/RecipeList
-@onready var money_label = $LaptopScreen/VBoxContainer/Header/MoneyLabel
+@onready var recipe_list = $LaptopScreen/MarginContainer/VBoxContainer/ScrollContainer/RecipeList
+@onready var money_label = $LaptopScreen/MarginContainer/VBoxContainer/Header/MoneyLabel
 
 var style_normal: StyleBoxFlat
 var style_hover: StyleBoxFlat

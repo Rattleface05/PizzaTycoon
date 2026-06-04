@@ -99,10 +99,12 @@ signal recipes_updated()
 
 const RECIPES = [
 	{ "name": "Margherita", "buy_cost": 0.0, "pizza_value": 10.0 },
-	{ "name": "Pepperoni", "buy_cost": 100.0, "pizza_value": 25.0 },
-	{ "name": "Quattro Formaggi", "buy_cost": 500.0, "pizza_value": 60.0 },
-	{ "name": "Carnivora", "buy_cost": 2000.0, "pizza_value": 150.0 },
-	{ "name": "Supreme Master", "buy_cost": 10000.0, "pizza_value": 500.0 }
+	{ "name": "Pepperoni", "buy_cost": 200.0, "pizza_value": 35.0 },
+	{ "name": "Quattro Formaggi", "buy_cost": 1200.0, "pizza_value": 120.0 },
+	{ "name": "Carnivora", "buy_cost": 8000.0, "pizza_value": 450.0 },
+	{ "name": "Supreme Master", "buy_cost": 50000.0, "pizza_value": 2000.0 },
+	{ "name": "Galactic Pizza", "buy_cost": 300000.0, "pizza_value": 10000.0 },
+	{ "name": "Pizza Singularity", "buy_cost": 2000000.0, "pizza_value": 60000.0 }
 ]
 
 var unlocked_recipes: Array[int] = [0]
