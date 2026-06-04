@@ -95,6 +95,27 @@ var pizza_masters: int = 0:
 
 var _auto_cook_progress: float = 0.0
 
+signal recipes_updated()
+
+const RECIPES = [
+	{ "name": "Margherita", "buy_cost": 0.0, "pizza_value": 10.0 },
+	{ "name": "Pepperoni", "buy_cost": 100.0, "pizza_value": 25.0 },
+	{ "name": "Quattro Formaggi", "buy_cost": 500.0, "pizza_value": 60.0 },
+	{ "name": "Carnivora", "buy_cost": 2000.0, "pizza_value": 150.0 },
+	{ "name": "Supreme Master", "buy_cost": 10000.0, "pizza_value": 500.0 }
+]
+
+var unlocked_recipes: Array[int] = [0]
+var active_recipe_index: int = 0:
+	set(value):
+		active_recipe_index = value
+		recipes_updated.emit()
+
+func get_current_pizza_price() -> float:
+	if active_recipe_index >= 0 and active_recipe_index < RECIPES.size():
+		return RECIPES[active_recipe_index]["pizza_value"]
+	return 10.0
+
 func _process(delta):
 	var junior_rate = junior_chefs * 0.2
 	var senior_rate = senior_chefs * 1.0
@@ -106,5 +127,5 @@ func _process(delta):
 		if _auto_cook_progress >= 1.0:
 			var completed_pizzas = floor(_auto_cook_progress)
 			for i in range(int(completed_pizzas)):
-				add_pizza(10.0)
+				add_pizza(get_current_pizza_price())
 			_auto_cook_progress -= completed_pizzas
