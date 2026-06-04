@@ -50,6 +50,7 @@ var upgrade_level: int = 0:
 var transition_layer: CanvasLayer
 var color_rect: ColorRect
 var is_transitioning: bool = false
+var active_office_tab: int = 0
 
 func _ready():
 	# Create canvas layer for transition
@@ -109,7 +110,7 @@ signal recipes_updated()
 signal cashiers_updated()
 
 const RECIPES = [
-	{ "name": "Margherita", "buy_cost": 0.0, "pizza_value": 15.0 },
+	{ "name": "Margherita", "buy_cost": 0.0, "pizza_value": 5.0 },
 	{ "name": "Pepperoni", "buy_cost": 400.0, "pizza_value": 60.0 },
 	{ "name": "Quattro Formaggi", "buy_cost": 3000.0, "pizza_value": 300.0 },
 	{ "name": "Carnivora", "buy_cost": 25000.0, "pizza_value": 1800.0 },
@@ -143,7 +144,7 @@ var active_recipe_index: int = 0:
 func get_current_pizza_price() -> float:
 	if active_recipe_index >= 0 and active_recipe_index < RECIPES.size():
 		return RECIPES[active_recipe_index]["pizza_value"]
-	return 15.0
+	return 5.0
 
 func _process(delta):
 	var total_rate = 0.0

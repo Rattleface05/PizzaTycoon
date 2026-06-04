@@ -14,6 +14,7 @@ var style_tab_active: StyleBoxFlat
 var style_tab_inactive: StyleBoxFlat
 
 var active_tab: int = 0 # 0 = Recipes, 1 = Chefs, 2 = Cashiers
+var action_buttons_data: Array = [] # Dictionary list: { "button": Button, "cost": float, "type": String, "index": int }
 
 func _ready():
 	to_kitchen_button.pressed.connect(_on_to_kitchen_pressed)
@@ -33,6 +34,9 @@ func _ready():
 	style_pressed = _create_btn_style(Color(0.12, 0.12, 0.16, 0.9))
 	style_tab_active = _create_btn_style(Color(0.45, 0.2, 0.2, 0.9))
 	style_tab_inactive = _create_btn_style(Color(0.12, 0.12, 0.16, 0.7))
+	
+	# Restore active tab index
+	active_tab = Global.active_office_tab
 	
 	# Initial updates
 	_update_tab_buttons_appearance()
@@ -63,11 +67,27 @@ func _on_to_kitchen_pressed():
 
 func _on_money_changed(amount):
 	money_label.text = "Cash: $" + Global.format_number(amount) + " "
-	# Rebuild to update buy buttons enable/disable state
-	_update_recipe_list()
+	
+	# Update only the disabled state of the active buttons to avoid rebuilding the list
+	for data in action_buttons_data:
+		var btn = data["button"]
+		if is_instance_valid(btn):
+			if data["type"] == "recipe":
+				var recipe_index = data["index"]
+				var is_active = (Global.active_recipe_index == recipe_index)
+				var is_unlocked = Global.unlocked_recipes.has(recipe_index)
+				if is_active:
+					btn.disabled = true
+				elif is_unlocked:
+					btn.disabled = false
+				else:
+					btn.disabled = (amount < data["cost"])
+			else:
+				btn.disabled = (amount < data["cost"])
 
 func _on_tab_changed(tab_index: int):
 	active_tab = tab_index
+	Global.active_office_tab = tab_index
 	_update_tab_buttons_appearance()
 	_update_recipe_list()
 
@@ -106,6 +126,8 @@ func _update_recipe_list():
 	# Clear old rows
 	for child in recipe_list.get_children():
 		child.queue_free()
+		
+	action_buttons_data.clear()
 		
 	if active_tab == 0:
 		# Build new recipe rows
@@ -156,6 +178,13 @@ func _update_recipe_list():
 				action_btn.disabled = (Global.money < recipe["buy_cost"])
 				action_btn.pressed.connect(func(): _on_buy_recipe(i, recipe["buy_cost"]))
 				
+			action_buttons_data.append({
+				"button": action_btn,
+				"cost": recipe["buy_cost"],
+				"type": "recipe",
+				"index": i
+			})
+				
 			row.add_child(action_btn)
 			recipe_list.add_child(row)
 			
@@ -201,6 +230,13 @@ func _update_recipe_list():
 			action_btn.disabled = (Global.money < cost)
 			action_btn.pressed.connect(func(): _on_hire_chef(i, cost))
 			
+			action_buttons_data.append({
+				"button": action_btn,
+				"cost": cost,
+				"type": "chef",
+				"index": i
+			})
+			
 			row.add_child(action_btn)
 			recipe_list.add_child(row)
 			
@@ -245,6 +281,13 @@ func _update_recipe_list():
 			action_btn.text = "Hire: $" + Global.format_number(cost)
 			action_btn.disabled = (Global.money < cost)
 			action_btn.pressed.connect(func(): _on_hire_cashier(i, cost))
+			
+			action_buttons_data.append({
+				"button": action_btn,
+				"cost": cost,
+				"type": "cashier",
+				"index": i
+			})
 			
 			row.add_child(action_btn)
 			recipe_list.add_child(row)
