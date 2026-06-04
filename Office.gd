@@ -62,7 +62,7 @@ func _on_to_kitchen_pressed():
 	Global.change_scene("res://Kitchen.tscn")
 
 func _on_money_changed(amount):
-	money_label.text = "Cash: $" + str(snapped(amount, 0.01)) + " "
+	money_label.text = "Cash: $" + Global.format_number(amount) + " "
 	# Rebuild to update buy buttons enable/disable state
 	_update_recipe_list()
 
@@ -129,7 +129,7 @@ func _update_recipe_list():
 			info_vbox.add_child(name_lbl)
 			
 			var desc_lbl = Label.new()
-			desc_lbl.text = "Pizza Value: $" + str(recipe["pizza_value"])
+			desc_lbl.text = "Pizza Value: $" + Global.format_number(recipe["pizza_value"])
 			desc_lbl.add_theme_font_size_override("font_size", 12)
 			desc_lbl.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8, 1))
 			info_vbox.add_child(desc_lbl)
@@ -152,7 +152,7 @@ func _update_recipe_list():
 				action_btn.text = "Activate"
 				action_btn.pressed.connect(func(): _on_activate_recipe(i))
 			else:
-				action_btn.text = "Buy: $" + str(recipe["buy_cost"])
+				action_btn.text = "Buy: $" + Global.format_number(recipe["buy_cost"])
 				action_btn.disabled = (Global.money < recipe["buy_cost"])
 				action_btn.pressed.connect(func(): _on_buy_recipe(i, recipe["buy_cost"]))
 				
@@ -181,7 +181,7 @@ func _update_recipe_list():
 			info_vbox.add_child(name_lbl)
 			
 			var desc_lbl = Label.new()
-			desc_lbl.text = "Cook Speed: +" + str(chef["cook_rate"]) + " pizzas/s"
+			desc_lbl.text = "Cook Speed: +" + Global.format_number(chef["cook_rate"]) + " pizzas/s"
 			desc_lbl.add_theme_font_size_override("font_size", 12)
 			desc_lbl.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8, 1))
 			info_vbox.add_child(desc_lbl)
@@ -197,7 +197,7 @@ func _update_recipe_list():
 			action_btn.add_theme_stylebox_override("hover", style_hover)
 			action_btn.add_theme_stylebox_override("pressed", style_pressed)
 			
-			action_btn.text = "Hire: $" + str(snapped(cost, 0.01))
+			action_btn.text = "Hire: $" + Global.format_number(cost)
 			action_btn.disabled = (Global.money < cost)
 			action_btn.pressed.connect(func(): _on_hire_chef(i, cost))
 			
@@ -226,7 +226,7 @@ func _update_recipe_list():
 			info_vbox.add_child(name_lbl)
 			
 			var desc_lbl = Label.new()
-			desc_lbl.text = "Sell Speed: +" + str(cashier["sell_rate"]) + "/s"
+			desc_lbl.text = "Sell Speed: +" + Global.format_number(cashier["sell_rate"]) + "/s"
 			desc_lbl.add_theme_font_size_override("font_size", 12)
 			desc_lbl.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8, 1))
 			info_vbox.add_child(desc_lbl)
@@ -242,7 +242,7 @@ func _update_recipe_list():
 			action_btn.add_theme_stylebox_override("hover", style_hover)
 			action_btn.add_theme_stylebox_override("pressed", style_pressed)
 			
-			action_btn.text = "Hire: $" + str(snapped(cost, 0.01))
+			action_btn.text = "Hire: $" + Global.format_number(cost)
 			action_btn.disabled = (Global.money < cost)
 			action_btn.pressed.connect(func(): _on_hire_cashier(i, cost))
 			

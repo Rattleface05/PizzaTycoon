@@ -51,7 +51,7 @@ func _on_make_pizza_pressed():
 		current_clicks = 0
 		# Reset bar with a slight delay so player sees it full
 		tween.tween_property(progress_bar, "value", 0.0, 0.2).set_delay(0.1)
-		_spawn_floating_text("Pizza Ready! ($" + str(price) + ")", make_pizza_button.global_position)
+		_spawn_floating_text("Pizza Ready! ($" + Global.format_number(price) + ")", make_pizza_button.global_position)
 
 func _spawn_floating_text(text: String, pos: Vector2):
 	if FloatingTextScene:
@@ -67,10 +67,10 @@ func _on_to_office_pressed():
 	Global.change_scene("res://Office.tscn")
 
 func _on_pizzas_ready_changed(amount):
-	pizzas_label.text = "Pizzas ready: " + str(amount) + " (Value: $" + str(Global.get_current_pizza_price()) + ")"
+	pizzas_label.text = "Pizzas ready: " + str(amount) + " (Value: $" + Global.format_number(Global.get_current_pizza_price()) + ")"
 
 func _on_recipes_updated():
 	_on_pizzas_ready_changed(Global.pizzas_ready)
 
 func _on_money_changed(amount):
-	money_label.text = "Money: $" + str(snapped(amount, 0.01))
+	money_label.text = "Money: $" + Global.format_number(amount)
