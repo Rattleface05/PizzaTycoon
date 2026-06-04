@@ -93,6 +93,26 @@ var pizza_masters: int = 0:
 		pizza_masters = value
 		staff_changed.emit()
 
+var executive_chefs: int = 0:
+	set(value):
+		executive_chefs = value
+		staff_changed.emit()
+
+var kitchen_managers: int = 0:
+	set(value):
+		kitchen_managers = value
+		staff_changed.emit()
+
+var pizza_legends: int = 0:
+	set(value):
+		pizza_legends = value
+		staff_changed.emit()
+
+var pizza_deities: int = 0:
+	set(value):
+		pizza_deities = value
+		staff_changed.emit()
+
 var _auto_cook_progress: float = 0.0
 
 signal recipes_updated()
@@ -122,7 +142,12 @@ func _process(delta):
 	var junior_rate = junior_chefs * 0.2
 	var senior_rate = senior_chefs * 1.0
 	var master_rate = pizza_masters * 5.0
-	var total_rate = junior_rate + senior_rate + master_rate
+	var executive_rate = executive_chefs * 25.0
+	var manager_rate = kitchen_managers * 120.0
+	var legend_rate = pizza_legends * 600.0
+	var deity_rate = pizza_deities * 3500.0
+	
+	var total_rate = junior_rate + senior_rate + master_rate + executive_rate + manager_rate + legend_rate + deity_rate
 	
 	if total_rate > 0.0:
 		_auto_cook_progress += total_rate * delta

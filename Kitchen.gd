@@ -10,14 +10,22 @@ var current_clicks: int = 0
 var FloatingTextScene = preload("res://FloatingText.tscn")
 
 @onready var money_label = $MoneyLabel
-@onready var hire_junior_button = $StaffPanel/VBoxContainer/HireJuniorButton
-@onready var hire_senior_button = $StaffPanel/VBoxContainer/HireSeniorButton
-@onready var hire_master_button = $StaffPanel/VBoxContainer/HireMasterButton
+@onready var hire_junior_button = $StaffPanel/ScrollContainer/VBoxContainer/HireJuniorButton
+@onready var hire_senior_button = $StaffPanel/ScrollContainer/VBoxContainer/HireSeniorButton
+@onready var hire_master_button = $StaffPanel/ScrollContainer/VBoxContainer/HireMasterButton
+@onready var hire_executive_button = $StaffPanel/ScrollContainer/VBoxContainer/HireExecutiveButton
+@onready var hire_manager_button = $StaffPanel/ScrollContainer/VBoxContainer/HireManagerButton
+@onready var hire_legend_button = $StaffPanel/ScrollContainer/VBoxContainer/HireLegendButton
+@onready var hire_deity_button = $StaffPanel/ScrollContainer/VBoxContainer/HireDeityButton
 @onready var to_office_button = $ToOfficeButton
 
 const BASE_JUNIOR_COST = 50.0
-const BASE_SENIOR_COST = 200.0
-const BASE_MASTER_COST = 800.0
+const BASE_SENIOR_COST = 250.0
+const BASE_MASTER_COST = 1200.0
+const BASE_EXECUTIVE_COST = 6000.0
+const BASE_MANAGER_COST = 35000.0
+const BASE_LEGEND_COST = 200000.0
+const BASE_DEITY_COST = 1250000.0
 
 
 func _ready():
@@ -28,6 +36,10 @@ func _ready():
 	hire_junior_button.pressed.connect(_on_hire_junior_pressed)
 	hire_senior_button.pressed.connect(_on_hire_senior_pressed)
 	hire_master_button.pressed.connect(_on_hire_master_pressed)
+	hire_executive_button.pressed.connect(_on_hire_executive_pressed)
+	hire_manager_button.pressed.connect(_on_hire_manager_pressed)
+	hire_legend_button.pressed.connect(_on_hire_legend_pressed)
+	hire_deity_button.pressed.connect(_on_hire_deity_pressed)
 	
 	Global.pizzas_ready_changed.connect(_on_pizzas_ready_changed)
 	Global.money_changed.connect(_on_money_changed)
@@ -103,6 +115,18 @@ func _get_senior_cost() -> float:
 func _get_master_cost() -> float:
 	return BASE_MASTER_COST * pow(1.15, Global.pizza_masters)
 
+func _get_executive_cost() -> float:
+	return BASE_EXECUTIVE_COST * pow(1.15, Global.executive_chefs)
+
+func _get_manager_cost() -> float:
+	return BASE_MANAGER_COST * pow(1.15, Global.kitchen_managers)
+
+func _get_legend_cost() -> float:
+	return BASE_LEGEND_COST * pow(1.15, Global.pizza_legends)
+
+func _get_deity_cost() -> float:
+	return BASE_DEITY_COST * pow(1.15, Global.pizza_deities)
+
 func _on_hire_junior_pressed():
 	var cost = _get_junior_cost()
 	if Global.money >= cost:
@@ -121,10 +145,38 @@ func _on_hire_master_pressed():
 		Global.money -= cost
 		Global.pizza_masters += 1
 
+func _on_hire_executive_pressed():
+	var cost = _get_executive_cost()
+	if Global.money >= cost:
+		Global.money -= cost
+		Global.executive_chefs += 1
+
+func _on_hire_manager_pressed():
+	var cost = _get_manager_cost()
+	if Global.money >= cost:
+		Global.money -= cost
+		Global.kitchen_managers += 1
+
+func _on_hire_legend_pressed():
+	var cost = _get_legend_cost()
+	if Global.money >= cost:
+		Global.money -= cost
+		Global.pizza_legends += 1
+
+func _on_hire_deity_pressed():
+	var cost = _get_deity_cost()
+	if Global.money >= cost:
+		Global.money -= cost
+		Global.pizza_deities += 1
+
 func _update_hire_buttons():
 	var j_cost = _get_junior_cost()
 	var s_cost = _get_senior_cost()
 	var m_cost = _get_master_cost()
+	var e_cost = _get_executive_cost()
+	var k_cost = _get_manager_cost()
+	var l_cost = _get_legend_cost()
+	var d_cost = _get_deity_cost()
 	
 	hire_junior_button.text = "Junior Chef: $" + str(snapped(j_cost, 0.01)) + " (+0.2/s)\nHired: " + str(Global.junior_chefs)
 	hire_junior_button.disabled = Global.money < j_cost
@@ -134,3 +186,15 @@ func _update_hire_buttons():
 	
 	hire_master_button.text = "Pizza Master: $" + str(snapped(m_cost, 0.01)) + " (+5.0/s)\nHired: " + str(Global.pizza_masters)
 	hire_master_button.disabled = Global.money < m_cost
+	
+	hire_executive_button.text = "Executive Chef: $" + str(snapped(e_cost, 0.01)) + " (+25/s)\nHired: " + str(Global.executive_chefs)
+	hire_executive_button.disabled = Global.money < e_cost
+	
+	hire_manager_button.text = "Kitchen Manager: $" + str(snapped(k_cost, 0.01)) + " (+120/s)\nHired: " + str(Global.kitchen_managers)
+	hire_manager_button.disabled = Global.money < k_cost
+	
+	hire_legend_button.text = "Pizza Legend: $" + str(snapped(l_cost, 0.01)) + " (+600/s)\nHired: " + str(Global.pizza_legends)
+	hire_legend_button.disabled = Global.money < l_cost
+	
+	hire_deity_button.text = "Pizza Deity: $" + str(snapped(d_cost, 0.01)) + " (+3500/s)\nHired: " + str(Global.pizza_deities)
+	hire_deity_button.disabled = Global.money < d_cost
