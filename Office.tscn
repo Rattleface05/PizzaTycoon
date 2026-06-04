@@ -108,55 +108,55 @@ text = "Go to Kitchen [D] ->"
 [node name="LaptopScreen" type="PanelContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
-anchor_left = 0.2333
-anchor_top = 0.125
-anchor_right = 0.7694
-anchor_bottom = 0.9000
+anchor_left = 0.236
+anchor_top = 0.250
+anchor_right = 0.769
+anchor_bottom = 0.766
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_laptop_screen")
 
 [node name="MarginContainer" type="MarginContainer" parent="LaptopScreen"]
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
 
 [node name="VBoxContainer" type="VBoxContainer" parent="LaptopScreen/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 10
 
-[node name="Header" type="HBoxContainer" parent="LaptopScreen/VBoxContainer"]
+[node name="Header" type="HBoxContainer" parent="LaptopScreen/MarginContainer/VBoxContainer"]
 layout_mode = 2
 alignment = 1
 
-[node name="Title" type="Label" parent="LaptopScreen/VBoxContainer/Header"]
+[node name="Title" type="Label" parent="LaptopScreen/MarginContainer/VBoxContainer/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.95, 0.35, 0.35, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 8
-theme_override_font_sizes/font_size = 24
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 18
 text = " Laptop: Recipe Manager"
 vertical_alignment = 1
 
-[node name="MoneyLabel" type="Label" parent="LaptopScreen/VBoxContainer/Header"]
+[node name="MoneyLabel" type="Label" parent="LaptopScreen/MarginContainer/VBoxContainer/Header"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 1, 0.2, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 20
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 16
 text = "Cash: $0.00 "
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="LaptopScreen/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="LaptopScreen/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="RecipeList" type="VBoxContainer" parent="LaptopScreen/VBoxContainer/ScrollContainer"]
+[node name="RecipeList" type="VBoxContainer" parent="LaptopScreen/MarginContainer/VBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 12
+theme_override_constants/separation = 8
