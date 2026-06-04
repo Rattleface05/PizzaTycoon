@@ -91,14 +91,14 @@ signal chefs_updated()
 
 const CHEFS = [
 	{ "name": "Junior Chef", "base_cost": 100.0, "cook_rate": 0.2 },
-	{ "name": "Senior Chef", "base_cost": 600.0, "cook_rate": 1.0 },
-	{ "name": "Pizza Master", "base_cost": 4000.0, "cook_rate": 6.0 },
-	{ "name": "Executive Chef", "base_cost": 30000.0, "cook_rate": 40.0 },
-	{ "name": "Kitchen Manager", "base_cost": 250000.0, "cook_rate": 300.0 },
-	{ "name": "Pizza Legend", "base_cost": 2000000.0, "cook_rate": 2500.0 },
-	{ "name": "Pizza Deity", "base_cost": 20000000.0, "cook_rate": 22000.0 },
-	{ "name": "Cosmic Cook-Bot", "base_cost": 250000000.0, "cook_rate": 200000.0 },
-	{ "name": "Chef Singularity", "base_cost": 3500000000.0, "cook_rate": 2000000.0 }
+	{ "name": "Senior Chef", "base_cost": 600.0, "cook_rate": 0.8 },
+	{ "name": "Pizza Master", "base_cost": 4000.0, "cook_rate": 3.0 },
+	{ "name": "Executive Chef", "base_cost": 30000.0, "cook_rate": 12.0 },
+	{ "name": "Kitchen Manager", "base_cost": 250000.0, "cook_rate": 50.0 },
+	{ "name": "Pizza Legend", "base_cost": 2000000.0, "cook_rate": 200.0 },
+	{ "name": "Pizza Deity", "base_cost": 20000000.0, "cook_rate": 800.0 },
+	{ "name": "Cosmic Cook-Bot", "base_cost": 250000000.0, "cook_rate": 3000.0 },
+	{ "name": "Chef Singularity", "base_cost": 3500000000.0, "cook_rate": 12000.0 }
 ]
 
 var hired_chefs: Array[int] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -111,27 +111,27 @@ signal cashiers_updated()
 
 const RECIPES = [
 	{ "name": "Margherita", "buy_cost": 0.0, "pizza_value": 5.0 },
-	{ "name": "Pepperoni", "buy_cost": 400.0, "pizza_value": 60.0 },
-	{ "name": "Quattro Formaggi", "buy_cost": 3000.0, "pizza_value": 300.0 },
-	{ "name": "Carnivora", "buy_cost": 25000.0, "pizza_value": 1800.0 },
-	{ "name": "Supreme Master", "buy_cost": 200000.0, "pizza_value": 12000.0 },
-	{ "name": "Galactic Pizza", "buy_cost": 2000000.0, "pizza_value": 90000.0 },
-	{ "name": "Pizza Singularity", "buy_cost": 25000000.0, "pizza_value": 800000.0 },
-	{ "name": "Pizza Omega", "buy_cost": 350000000.0, "pizza_value": 9000000.0 },
-	{ "name": "Pizza Universe", "buy_cost": 5000000000.0, "pizza_value": 110000000.0 },
-	{ "name": "Pizza Multiverse", "buy_cost": 80000000000.0, "pizza_value": 1500000000.0 }
+	{ "name": "Pepperoni", "buy_cost": 200.0, "pizza_value": 10.0 },
+	{ "name": "Quattro Formaggi", "buy_cost": 1200.0, "pizza_value": 22.0 },
+	{ "name": "Carnivora", "buy_cost": 8000.0, "pizza_value": 45.0 },
+	{ "name": "Supreme Master", "buy_cost": 50000.0, "pizza_value": 95.0 },
+	{ "name": "Galactic Pizza", "buy_cost": 300000.0, "pizza_value": 200.0 },
+	{ "name": "Pizza Singularity", "buy_cost": 2000000.0, "pizza_value": 450.0 },
+	{ "name": "Pizza Omega", "buy_cost": 15000000.0, "pizza_value": 1000.0 },
+	{ "name": "Pizza Universe", "buy_cost": 120000000.0, "pizza_value": 2400.0 },
+	{ "name": "Pizza Multiverse", "buy_cost": 1000000000.0, "pizza_value": 6000.0 }
 ]
 
 const CASHIERS = [
-	{ "name": "Junior Cashier", "base_cost": 150.0, "sell_rate": 0.4 },
-	{ "name": "Senior Cashier", "base_cost": 900.0, "sell_rate": 2.0 },
-	{ "name": "Selling Machine", "base_cost": 6000.0, "sell_rate": 12.0 },
-	{ "name": "Cashier Overlord", "base_cost": 45000.0, "sell_rate": 80.0 },
-	{ "name": "Hyper-Vender", "base_cost": 350000.0, "sell_rate": 600.0 },
-	{ "name": "Selling Singularity", "base_cost": 3000000.0, "sell_rate": 5000.0 },
-	{ "name": "Cosmic Merchant", "base_cost": 25000000.0, "sell_rate": 45000.0 },
-	{ "name": "Selling Portal", "base_cost": 300000000.0, "sell_rate": 400000.0 },
-	{ "name": "Mercenary of Sales", "base_cost": 4500000000.0, "sell_rate": 4000000.0 }
+	{ "name": "Junior Cashier", "base_cost": 150.0, "sell_rate": 0.3 },
+	{ "name": "Senior Cashier", "base_cost": 900.0, "sell_rate": 1.2 },
+	{ "name": "Selling Machine", "base_cost": 6000.0, "sell_rate": 5.0 },
+	{ "name": "Cashier Overlord", "base_cost": 45000.0, "sell_rate": 20.0 },
+	{ "name": "Hyper-Vender", "base_cost": 350000.0, "sell_rate": 80.0 },
+	{ "name": "Selling Singularity", "base_cost": 3000000.0, "sell_rate": 300.0 },
+	{ "name": "Cosmic Merchant", "base_cost": 25000000.0, "sell_rate": 1200.0 },
+	{ "name": "Selling Portal", "base_cost": 300000000.0, "sell_rate": 5000.0 },
+	{ "name": "Mercenary of Sales", "base_cost": 4500000000.0, "sell_rate": 20000.0 }
 ]
 
 var hired_cashiers: Array[int] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
