@@ -23,6 +23,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 if not os.path.exists(DIRECTORY):
     os.makedirs(DIRECTORY)
 
+socketserver.TCPServer.allow_reuse_address = True
 with socketserver.TCPServer(("", PORT), Handler) as httpd:
     print(f"Serving {DIRECTORY} at http://localhost:{PORT}")
     try:
