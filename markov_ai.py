@@ -71,41 +71,14 @@ CUSTOMER_CORPUS = [
     "Give me the hottest slice you sell."
 ]
 
-SPLASH_CORPUS = [
-    "Contains 100% virtual cheese!",
-    "Mamma mia!",
-    "Better than real life!",
-    "Powered by Local AI!",
-    "Also try Terraria!",
-    "Now with extra pepperoni!",
-    "Pizza Tycoon is watching you.",
-    "Hotter than the oven!",
-    "Cheesy graphics!",
-    "Bake it until you make it!",
-    "Knead the dough!",
-    "A slice of the action!",
-    "10/10 would bake again.",
-    "Now with 0% real calories!",
-    "Don't tell the Italians!",
-    "Contains 100% real action!",
-    "Bake the graphics!",
-    "Powered by cheesy dough!"
-]
-
-# Antrenam modelele instant
+# Antrenam modelul instant
 customer_ai = MarkovLanguageModel()
 customer_ai.train(CUSTOMER_CORPUS)
-
-splash_ai = MarkovLanguageModel()
-splash_ai.train(SPLASH_CORPUS)
 
 def get_customer_reply():
     return customer_ai.generate(max_length=12)
 
-def get_splash_text():
-    return splash_ai.generate(max_length=8)
-
 if __name__ == "__main__":
     # Test
-    print("Customer:", get_customer_reply())
-    print("Splash:", get_splash_text())
+    for _ in range(5):
+        print("Customer:", get_customer_reply())

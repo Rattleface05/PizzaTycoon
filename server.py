@@ -5,6 +5,7 @@ import os
 import sys
 import json
 import markov_ai
+import cfg_ai
 
 PORT = 8000
 DIRECTORY = "export/web"
@@ -39,8 +40,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_header("Content-Type", "application/json")
             self.end_headers()
             
-            # Generare 100% locala si instanta cu propriul nostru AI (Markov Chain LM)
-            response_text = markov_ai.get_splash_text()
+            # Generare 100% locala folosind Symbolic AI (Context-Free Grammar)
+            response_text = cfg_ai.get_splash_text()
             
             self.wfile.write(json.dumps({"text": response_text}).encode("utf-8"))
             return
