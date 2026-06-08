@@ -6,14 +6,18 @@ extends Control
 @onready var recipes_tab_button = $LaptopScreen/MarginContainer/VBoxContainer/TabBar/RecipesTabButton
 @onready var chefs_tab_button = $LaptopScreen/MarginContainer/VBoxContainer/TabBar/ChefsTabButton
 @onready var cashiers_tab_button = $LaptopScreen/MarginContainer/VBoxContainer/TabBar/CashiersTabButton
+@onready var prestige_tab_button = $LaptopScreen/MarginContainer/VBoxContainer/TabBar/PrestigeTabButton
 
 var style_normal: StyleBoxFlat
 var style_hover: StyleBoxFlat
 var style_pressed: StyleBoxFlat
 var style_tab_active: StyleBoxFlat
 var style_tab_inactive: StyleBoxFlat
+var style_gold_normal: StyleBoxFlat
+var style_gold_hover: StyleBoxFlat
+var style_gold_pressed: StyleBoxFlat
 
-var active_tab: int = 0 # 0 = Recipes, 1 = Chefs, 2 = Cashiers
+var active_tab: int = 0 # 0 = Recipes, 1 = Chefs, 2 = Cashiers, 3 = Prestige
 var action_buttons_data: Array = [] # Dictionary list: { "button": Button, "cost": float, "type": String, "index": int }
 
 func _ready():
@@ -21,12 +25,14 @@ func _ready():
 	recipes_tab_button.pressed.connect(func(): _on_tab_changed(0))
 	chefs_tab_button.pressed.connect(func(): _on_tab_changed(1))
 	cashiers_tab_button.pressed.connect(func(): _on_tab_changed(2))
+	prestige_tab_button.pressed.connect(func(): _on_tab_changed(3))
 	
 	# Connect global updates
 	Global.money_changed.connect(_on_money_changed)
 	Global.recipes_updated.connect(_update_recipe_list)
 	Global.chefs_updated.connect(_update_recipe_list)
 	Global.cashiers_updated.connect(_update_recipe_list)
+	Global.prestige_updated.connect(_update_recipe_list)
 	
 	# Build styles
 	style_normal = _create_btn_style(Color(0.18, 0.18, 0.24, 0.9))
@@ -34,6 +40,9 @@ func _ready():
 	style_pressed = _create_btn_style(Color(0.12, 0.12, 0.16, 0.9))
 	style_tab_active = _create_btn_style(Color(0.45, 0.2, 0.2, 0.9))
 	style_tab_inactive = _create_btn_style(Color(0.12, 0.12, 0.16, 0.7))
+	style_gold_normal = _create_btn_style(Color(0.85, 0.65, 0.13, 0.9))
+	style_gold_hover = _create_btn_style(Color(1.0, 0.8, 0.2, 0.95))
+	style_gold_pressed = _create_btn_style(Color(0.65, 0.45, 0.05, 0.9))
 	
 	# Restore active tab index
 	active_tab = Global.active_office_tab
@@ -82,6 +91,14 @@ func _on_money_changed(amount):
 					btn.disabled = false
 				else:
 					btn.disabled = (amount < data["cost"])
+			elif data["type"] == "prestige_reset":
+				var to_gain = Global.get_prestige_points_to_gain()
+				if to_gain > 0:
+					btn.text = "Reset for +" + str(to_gain) + " Golden Pizzas"
+					btn.disabled = false
+				else:
+					btn.text = "Prestige (Need $100K)"
+					btn.disabled = true
 			else:
 				btn.disabled = (amount < data["cost"])
 
@@ -92,7 +109,7 @@ func _on_tab_changed(tab_index: int):
 	_update_recipe_list()
 
 func _update_tab_buttons_appearance():
-	# Reset styles for all three buttons first
+	# Reset styles for all buttons first
 	recipes_tab_button.add_theme_stylebox_override("normal", style_tab_inactive)
 	recipes_tab_button.add_theme_stylebox_override("hover", style_hover)
 	recipes_tab_button.add_theme_stylebox_override("pressed", style_pressed)
@@ -104,6 +121,10 @@ func _update_tab_buttons_appearance():
 	cashiers_tab_button.add_theme_stylebox_override("normal", style_tab_inactive)
 	cashiers_tab_button.add_theme_stylebox_override("hover", style_hover)
 	cashiers_tab_button.add_theme_stylebox_override("pressed", style_pressed)
+	
+	prestige_tab_button.add_theme_stylebox_override("normal", style_tab_inactive)
+	prestige_tab_button.add_theme_stylebox_override("hover", style_hover)
+	prestige_tab_button.add_theme_stylebox_override("pressed", style_pressed)
 	
 	# Override active tab style
 	if active_tab == 0:
@@ -118,6 +139,10 @@ func _update_tab_buttons_appearance():
 		cashiers_tab_button.add_theme_stylebox_override("normal", style_tab_active)
 		cashiers_tab_button.add_theme_stylebox_override("hover", style_tab_active)
 		cashiers_tab_button.add_theme_stylebox_override("pressed", style_tab_active)
+	elif active_tab == 3:
+		prestige_tab_button.add_theme_stylebox_override("normal", style_tab_active)
+		prestige_tab_button.add_theme_stylebox_override("hover", style_tab_active)
+		prestige_tab_button.add_theme_stylebox_override("pressed", style_tab_active)
 
 func _update_recipe_list():
 	if not recipe_list:
@@ -291,6 +316,153 @@ func _update_recipe_list():
 			
 			row.add_child(action_btn)
 			recipe_list.add_child(row)
+			
+	elif active_tab == 3:
+		# Build Prestige Tab UI
+		
+		# 1. Info Header Row (Current Golden Pizzas and Passive Bonus)
+		var info_row = HBoxContainer.new()
+		info_row.add_theme_constant_override("separation", 15)
+		
+		var info_vbox = VBoxContainer.new()
+		info_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		
+		var gold_lbl = Label.new()
+		gold_lbl.text = "Golden Pizzas Owned: " + str(Global.prestige_points)
+		gold_lbl.add_theme_font_size_override("font_size", 16)
+		gold_lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2, 1)) # Gold text
+		gold_lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
+		gold_lbl.add_theme_constant_override("outline_size", 4)
+		info_vbox.add_child(gold_lbl)
+		
+		var pass_lbl = Label.new()
+		var passive_bonus = Global.prestige_points * 5
+		pass_lbl.text = "Current Passive Bonus: +" + str(passive_bonus) + "% Pizza Value"
+		pass_lbl.add_theme_font_size_override("font_size", 12)
+		pass_lbl.add_theme_color_override("font_color", Color(0.9, 0.9, 0.9, 1))
+		info_vbox.add_child(pass_lbl)
+		
+		info_row.add_child(info_vbox)
+		
+		# Prestige/Reset Action Button
+		var reset_btn = Button.new()
+		reset_btn.custom_minimum_size = Vector2(180, 45)
+		reset_btn.add_theme_font_size_override("font_size", 12)
+		reset_btn.add_theme_stylebox_override("normal", style_gold_normal)
+		reset_btn.add_theme_stylebox_override("hover", style_gold_hover)
+		reset_btn.add_theme_stylebox_override("pressed", style_gold_pressed)
+		
+		var to_gain = Global.get_prestige_points_to_gain()
+		if to_gain > 0:
+			reset_btn.text = "Reset for +" + str(to_gain) + " Golden Pizzas"
+			reset_btn.disabled = false
+		else:
+			reset_btn.text = "Prestige (Need $100K)"
+			reset_btn.disabled = true
+			
+		reset_btn.pressed.connect(_on_prestige_pressed)
+		info_row.add_child(reset_btn)
+		
+		action_buttons_data.append({
+			"button": reset_btn,
+			"cost": 100000.0,
+			"type": "prestige_reset",
+			"index": 0
+		})
+		
+		recipe_list.add_child(info_row)
+		
+		# Visual separator line
+		var separator = ColorRect.new()
+		separator.custom_minimum_size = Vector2(0, 2)
+		separator.color = Color(1.0, 0.85, 0.2, 0.3)
+		recipe_list.add_child(separator)
+		
+		# 2. Golden Upgrades List
+		var upgrades_data = [
+			{
+				"id": "golden_crust",
+				"name": "Golden Crust",
+				"desc_func": func(lvl): return "Pizza Sell Value: +" + str(lvl * 10) + "%",
+				"next_func": func(lvl): return "Next level: +" + str((lvl + 1) * 10) + "%",
+				"cost_func": func(lvl): return lvl + 1,
+				"max_level": 9999
+			},
+			{
+				"id": "kitchen_rush",
+				"name": "Kitchen Rush",
+				"desc_func": func(lvl): return "Chef Cooking Speed: +" + str(lvl * 10) + "%",
+				"next_func": func(lvl): return "Next level: +" + str((lvl + 1) * 10) + "%",
+				"cost_func": func(lvl): return lvl + 1,
+				"max_level": 9999
+			},
+			{
+				"id": "sales_pitch",
+				"name": "Sales Pitch",
+				"desc_func": func(lvl): return "Cashier Selling Speed: +" + str(lvl * 10) + "%",
+				"next_func": func(lvl): return "Next level: +" + str((lvl + 1) * 10) + "%",
+				"cost_func": func(lvl): return lvl + 1,
+				"max_level": 9999
+			},
+			{
+				"id": "master_baker",
+				"name": "Master Baker",
+				"desc_func": func(lvl): return "Baking Clicks Needed: " + str(max(1, 5 - lvl)),
+				"next_func": func(lvl): return "Next level: " + str(max(1, 4 - lvl)) + " clicks",
+				"cost_func": func(lvl):
+					var costs = [2, 5, 10, 25]
+					return costs[min(lvl, costs.size() - 1)],
+				"max_level": 4
+			}
+		]
+		
+		for upg in upgrades_data:
+			var lvl = Global.prestige_upgrades.get(upg["id"], 0)
+			var cost = upg["cost_func"].call(lvl)
+			var is_max = lvl >= upg["max_level"]
+			
+			var row = HBoxContainer.new()
+			row.add_theme_constant_override("separation", 15)
+			
+			var upg_vbox = VBoxContainer.new()
+			upg_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			
+			var name_lbl = Label.new()
+			name_lbl.text = upg["name"] + " (Lvl " + str(lvl) + ")"
+			name_lbl.add_theme_font_size_override("font_size", 14)
+			name_lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
+			name_lbl.add_theme_constant_override("outline_size", 4)
+			upg_vbox.add_child(name_lbl)
+			
+			var desc_lbl = Label.new()
+			if is_max:
+				desc_lbl.text = upg["desc_func"].call(lvl) + " (MAX)"
+			else:
+				desc_lbl.text = upg["desc_func"].call(lvl) + " | " + upg["next_func"].call(lvl)
+			desc_lbl.add_theme_font_size_override("font_size", 11)
+			desc_lbl.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8, 1))
+			upg_vbox.add_child(desc_lbl)
+			
+			row.add_child(upg_vbox)
+			
+			var buy_btn = Button.new()
+			buy_btn.custom_minimum_size = Vector2(160, 40)
+			buy_btn.add_theme_font_size_override("font_size", 12)
+			
+			buy_btn.add_theme_stylebox_override("normal", style_normal)
+			buy_btn.add_theme_stylebox_override("hover", style_hover)
+			buy_btn.add_theme_stylebox_override("pressed", style_pressed)
+			
+			if is_max:
+				buy_btn.text = "MAX LEVEL"
+				buy_btn.disabled = true
+			else:
+				buy_btn.text = "Buy: " + str(cost) + " GP"
+				buy_btn.disabled = (Global.prestige_points < cost)
+				buy_btn.pressed.connect(func(): _on_buy_prestige_upgrade(upg["id"], cost))
+				
+			row.add_child(buy_btn)
+			recipe_list.add_child(row)
 
 func _on_activate_recipe(index: int):
 	Global.active_recipe_index = index
@@ -312,3 +484,20 @@ func _on_hire_cashier(index: int, cost: float):
 		Global.money -= cost
 		Global.hired_cashiers[index] += 1
 		Global.cashiers_updated.emit()
+
+func _on_prestige_pressed():
+	var confirm_dialog = ConfirmationDialog.new()
+	confirm_dialog.title = "Prestige Confirmation"
+	confirm_dialog.dialog_text = "Are you sure you want to prestige?\n\nThis will reset your cash, pizzas, chef/cashier staff, and recipes in exchange for Golden Pizzas.\n\nAll your prestige upgrades will be kept!"
+	confirm_dialog.confirmed.connect(func():
+		Global.prestige_reset()
+	)
+	add_child(confirm_dialog)
+	confirm_dialog.popup_centered()
+
+func _on_buy_prestige_upgrade(upgrade_id: String, cost: int):
+	if Global.prestige_points >= cost:
+		Global.prestige_points -= cost
+		Global.prestige_upgrades[upgrade_id] += 1
+		Global.prestige_updated.emit()
+		Global.save_game()
