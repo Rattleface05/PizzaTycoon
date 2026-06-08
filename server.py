@@ -3,6 +3,8 @@ import http.server
 import socketserver
 import os
 import sys
+import json
+import markov_ai
 
 PORT = 8000
 DIRECTORY = "export/web"
@@ -19,6 +21,32 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         if self.path.endswith(".wasm"):
             self.send_header("Content-Type", "application/wasm")
         super().end_headers()
+
+    def do_GET(self):
+        if self.path == "/api/agent/customer":
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            
+            # Generare 100% locala si instanta cu propriul nostru AI (Markov Chain LM)
+            response_text = markov_ai.get_customer_reply()
+            
+            self.wfile.write(json.dumps({"text": response_text}).encode("utf-8"))
+            return
+            
+        elif self.path == "/api/agent/splash":
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            
+            # Generare 100% locala si instanta cu propriul nostru AI (Markov Chain LM)
+            response_text = markov_ai.get_splash_text()
+            
+            self.wfile.write(json.dumps({"text": response_text}).encode("utf-8"))
+            return
+            
+        else:
+            super().do_GET()
 
 if not os.path.exists(DIRECTORY):
     os.makedirs(DIRECTORY)

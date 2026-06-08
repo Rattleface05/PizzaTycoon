@@ -26,6 +26,10 @@ const RESOLUTIONS = [
 	Vector2i(1920, 1080)
 ]
 
+var splash_http: HTTPRequest
+var splash_label: Label
+
+
 func _ready():
 	# Configure initial visibility
 	main_panel.visible = true
@@ -39,6 +43,30 @@ func _ready():
 			bg_frames.append(tex)
 	if bg_frames.size() > 0:
 		background_texture.texture = bg_frames[0]
+	
+	# Splash text setup
+	splash_label = Label.new()
+	splash_label.text = "Loading AI..."
+	splash_label.add_theme_font_size_override("font_size", 24)
+	splash_label.add_theme_color_override("font_color", Color(1.0, 1.0, 0.0))
+	splash_label.add_theme_color_override("font_outline_color", Color(0, 0, 0))
+	splash_label.add_theme_constant_override("outline_size", 4)
+	splash_label.rotation_degrees = -15
+	splash_label.position = Vector2(700, 100) # Assuming 1152x648 window, around top-right of the title
+	add_child(splash_label)
+	
+	var tween = create_tween().set_loops()
+	tween.tween_property(splash_label, "scale", Vector2(1.1, 1.1), 0.5)
+	tween.tween_property(splash_label, "scale", Vector2(1.0, 1.0), 0.5)
+	
+	splash_http = HTTPRequest.new()
+	add_child(splash_http)
+	splash_http.request_completed.connect(_on_splash_request_completed)
+	
+	var api_url = "http://localhost:8000/api/agent/splash"
+	if OS.has_feature("web"):
+		api_url = str(JavaScriptBridge.eval("window.location.origin")) + "/api/agent/splash"
+	splash_http.request(api_url)
 	
 	# Connect buttons
 	new_game_button.pressed.connect(_on_new_game_pressed)
@@ -120,3 +148,14 @@ func _on_resolution_selected(index: int):
 		var window_size = DisplayServer.window_get_size()
 		var center_pos = screen_size / 2 - window_size / 2
 		DisplayServer.window_set_position(center_pos)
+
+func _on_splash_request_completed(result, response_code, headers, body):
+	if response_code == 200:
+		var json = JSON.new()
+		var error = json.parse(body.get_string_from_utf8())
+		if error == OK:
+			var data = json.data
+			if typeof(data) == TYPE_DICTIONARY and data.has("text"):
+				splash_label.text = data["text"]
+				return
+	splash_label.text = "Error loading AI!"
