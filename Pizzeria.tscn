@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://dpvxvq2vq1"]
+[gd_scene format=3 uid="uid://dpvxvq2vq1"]
 
-[ext_resource type="Script" path="res://Pizzeria.gd" id="1_2"]
-[ext_resource type="Texture2D" uid="uid://dmfs7tepythrs" path="res://textures/backgrounds/tables.jpg" id="2_bg"]
+[ext_resource type="Script" uid="uid://b0hwvpf1py0ac" path="res://Pizzeria.gd" id="1_2"]
+[ext_resource type="Texture2D" uid="uid://cfi8jb73wm3ru" path="res://textures/backgrounds/tables_normal.jpg" id="2_b053o"]
 
-[node name="Pizzeria" type="Control"]
+[node name="Pizzeria" type="Control" unique_id=790965064]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,17 +12,17 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_2")
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="Background" type="TextureRect" parent="." unique_id=1570396333]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_bg")
+texture = ExtResource("2_b053o")
 expand_mode = 1
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=1064295681]
 layout_mode = 0
 offset_left = 32.0
 offset_top = 32.0
@@ -31,49 +31,48 @@ offset_bottom = 80.0
 theme_override_font_sizes/font_size = 32
 text = "PIZZERIA STOREFRONT"
 
-[node name="HUD" type="VBoxContainer" parent="."]
+[node name="HUD" type="VBoxContainer" parent="." unique_id=1367924645]
 layout_mode = 0
 offset_left = 32.0
 offset_top = 80.0
 offset_right = 300.0
 offset_bottom = 200.0
 
-[node name="MoneyLabel" type="Label" parent="HUD"]
+[node name="MoneyLabel" type="Label" parent="HUD" unique_id=1776845122]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 1, 0.2, 1)
 theme_override_font_sizes/font_size = 32
 text = "Money: $0"
 
-[node name="PizzasLabel" type="Label" parent="HUD"]
+[node name="PizzasLabel" type="Label" parent="HUD" unique_id=5275697]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Pizzas to sell: 0"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=848207729]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
 offset_left = 40.0
-offset_top = 0.0
 offset_right = 440.0
 offset_bottom = 200.0
 grow_vertical = 2
 theme_override_constants/separation = 20
 
-[node name="SellButton" type="Button" parent="VBoxContainer"]
+[node name="SellButton" type="Button" parent="VBoxContainer" unique_id=983629713]
 custom_minimum_size = Vector2(400, 80)
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Sell Pizza ($10)"
 
-[node name="UpgradeButton" type="Button" parent="VBoxContainer"]
+[node name="UpgradeButton" type="Button" parent="VBoxContainer" unique_id=1869452187]
 custom_minimum_size = Vector2(400, 80)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Upgrade Pizzeria"
 
-[node name="ToKitchenButton" type="Button" parent="."]
+[node name="ToKitchenButton" type="Button" parent="." unique_id=1838277768]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
