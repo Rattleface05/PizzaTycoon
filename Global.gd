@@ -65,8 +65,20 @@ var color_rect: ColorRect
 var vortex_rect: ColorRect
 var is_transitioning: bool = false
 var active_office_tab: int = 0
+var bgm_player: AudioStreamPlayer
 
 func _ready():
+	# Setup Audio
+	bgm_player = AudioStreamPlayer.new()
+	var stream = load("res://sfx/music/background_music.ogg")
+	if stream is AudioStreamOggVorbis:
+		stream.loop = true
+	bgm_player.stream = stream
+	bgm_player.autoplay = true
+	bgm_player.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(bgm_player)
+	bgm_player.play()
+	
 	# Create canvas layer for transition
 	transition_layer = CanvasLayer.new()
 	transition_layer.layer = 100 # Draw above everything
