@@ -27,11 +27,29 @@ The storefront where products are sold and upgrades are purchased.
 A juiciness/feedback system.
 - Whenever a pizza is sold in the Pizzeria, a floating text node is instantiated, animating upwards and fading out to provide visual confirmation of the money earned.
 
-## How to Run
-1. Clone the repository.
-2. Open the project folder in Godot 4.
-3. Import and run the game (default main scene is `Kitchen.tscn`).
+## How to Run & Test
 
+Pentru a beneficia de funcționalitățile complete (inclusiv agenții AI), jocul trebuie rulat folosind serverul Python inclus, care acționează ca un backend AI local:
+
+### Varianta Web (Recomandată)
+1. Clonează acest repository.
+2. Ai două variante pentru a rula jocul în terminal:
+   - **Varianta Automată (Recomandat):** Exporți jocul direct din terminal și pornești serverul dintr-o singură comandă:
+     ```bash
+     ./build_and_run.sh
+     ```
+   - **Varianta Manuală:** Dacă ai exportat deja jocul manual din engine, poți doar porni serverul:
+     ```bash
+     ./run_server.sh
+     ```
+3. Deschide un browser și accesează `http://localhost:8000`.
+4. Jocul va rula nativ în browser, iar serverul din fundal va oferi replici AI instanțelor de clienți!
+
+### Varianta Godot Editor (Pentru Dezvoltare)
+1. Clonează repository-ul.
+2. Pornește serverul AI (pentru a avea clienți funcționali): `./run_server.sh`
+3. Deschide proiectul în **Godot 4**.
+4. Apasă butonul de Play (sau F5) pentru a rula scena principală. Jocul va interoga automat `localhost:8000` pentru AI.
 ## Evaluare: Procesul de dezvoltare software cu AI (MDS - Partea B)
 
 Această secțiune documentează îndeplinirea cerințelor de la Partea B din `barem.txt`:
