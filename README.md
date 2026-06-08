@@ -31,3 +31,15 @@ A juiciness/feedback system.
 1. Clone the repository.
 2. Open the project folder in Godot 4.
 3. Import and run the game (default main scene is `Kitchen.tscn`).
+
+## Evaluare: Procesul de dezvoltare software cu AI (MDS - Partea B)
+
+Această secțiune documentează îndeplinirea cerințelor de la Partea B din `barem.txt`:
+
+1. **User stories, backlog creation:** (A fost implementat anterior în structura proiectului, pe repo-ul principal/feedback.txt)
+2. **Diagrame:** Arhitectura proiectului și workflow-ul AI (Mermaid format) pot fi vizualizate aici: [docs/architecture.md](docs/architecture.md)
+3. **Source control cu git:** S-a utilizat Git extensiv pe parcursul dezvoltării (branch-uri precum `aitudor`, push-uri, pull requests, multiple commit-uri). Istoricul se regăsește în tab-ul *Commits* din repository-ul de GitHub.
+4. **Teste automate (inclusiv evals pentru agenți):** Script de testare Python (folosind `unittest`) pentru evaluarea modelului de AI local: [test_agents.py](test_agents.py)
+5. **Pipeline CI/CD:** Configurarea GitHub Actions rulând testele la fiecare push pe `main`: [.github/workflows/ci.yml](.github/workflows/ci.yml)
+6. **Raportare bug si rezolvare cu pull request:** O problemă de la API-urile externe a dus la decizia de a crea modelul Markov intern. Detalii aici: [docs/bug_report.md](docs/bug_report.md)
+7. **Raport folosire tooluri AI:** Un rezumat detaliat al intervenției asistentului AI: [docs/AI_TOOLS_REPORT.md](docs/AI_TOOLS_REPORT.md)
