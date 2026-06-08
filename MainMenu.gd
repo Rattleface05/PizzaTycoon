@@ -69,6 +69,10 @@ func _ready():
 		resolution_option.selected = 1
 		
 	resolution_option.item_selected.connect(_on_resolution_selected)
+	# Web specific adjustments
+	if OS.has_feature("web"):
+		quit_button.visible = false
+		resolution_option.get_parent().visible = false
 
 func _process(delta):
 	# Animate GIF background
@@ -93,7 +97,10 @@ func _on_settings_pressed():
 	settings_panel.visible = true
 
 func _on_quit_pressed():
-	get_tree().quit()
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval("window.opener = null; window.open('', '_self'); window.close();")
+	else:
+		get_tree().quit()
 
 func _on_back_pressed():
 	settings_panel.visible = false
