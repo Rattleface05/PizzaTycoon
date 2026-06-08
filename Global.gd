@@ -62,6 +62,7 @@ var upgrade_level: int = 0:
 
 var transition_layer: CanvasLayer
 var color_rect: ColorRect
+var vortex_rect: ColorRect
 var is_transitioning: bool = false
 var active_office_tab: int = 0
 
@@ -76,6 +77,17 @@ func _ready():
 	color_rect.anchors_preset = Control.PRESET_FULL_RECT
 	color_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	transition_layer.add_child(color_rect)
+	
+	vortex_rect = ColorRect.new()
+	vortex_rect.anchors_preset = Control.PRESET_FULL_RECT
+	vortex_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var shader = load("res://vortex.gdshader")
+	var mat = ShaderMaterial.new()
+	mat.shader = shader
+	mat.set_shader_parameter("strength", 0.0)
+	vortex_rect.material = mat
+	vortex_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	transition_layer.add_child(vortex_rect)
 	
 	color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	is_transitioning = false
@@ -188,6 +200,44 @@ func get_prestige_points_to_gain() -> int:
 	if money < 100000.0:
 		return 0
 	return int(floor(sqrt(money / 100000.0)))
+
+func play_prestige_transition():
+	if is_transitioning:
+		return
+	is_transitioning = true
+	
+	color_rect.mouse_filter = Control.MOUSE_FILTER_STOP
+	vortex_rect.mouse_filter = Control.MOUSE_FILTER_STOP
+	
+	var mat = vortex_rect.material as ShaderMaterial
+	
+	var tween = create_tween()
+	tween.set_trans(Tween.TRANS_CUBIC)
+	tween.set_ease(Tween.EASE_IN)
+	# Spin inward and increase effect
+	tween.tween_property(mat, "shader_parameter/strength", 25.0, 1.5)
+	
+	var color_tween = create_tween()
+	color_tween.tween_interval(1.0)
+	color_tween.tween_property(color_rect, "color:a", 1.0, 0.5)
+	
+	await tween.finished
+	
+	prestige_reset()
+	
+	var tween_out = create_tween()
+	tween_out.set_trans(Tween.TRANS_CUBIC)
+	tween_out.set_ease(Tween.EASE_OUT)
+	tween_out.tween_property(mat, "shader_parameter/strength", 0.0, 1.5)
+	
+	var color_tween_out = create_tween()
+	color_tween_out.tween_property(color_rect, "color:a", 0.0, 0.5)
+	
+	await tween_out.finished
+	
+	color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vortex_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	is_transitioning = false
 
 func prestige_reset():
 	var gained = get_prestige_points_to_gain()

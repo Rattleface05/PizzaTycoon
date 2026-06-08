@@ -490,7 +490,7 @@ func _on_prestige_pressed():
 	confirm_dialog.title = "Prestige Confirmation"
 	confirm_dialog.dialog_text = "Are you sure you want to prestige?\n\nThis will reset your cash, pizzas, chef/cashier staff, and recipes in exchange for Golden Pizzas.\n\nAll your prestige upgrades will be kept!"
 	confirm_dialog.confirmed.connect(func():
-		Global.prestige_reset()
+		Global.play_prestige_transition()
 	)
 	add_child(confirm_dialog)
 	confirm_dialog.popup_centered()
