@@ -1,8 +1,8 @@
 extends Control
 
 @onready var background = $Background
-@onready var money_label = $HUD/MoneyLabel
-@onready var pizzas_label = $HUD/PizzasLabel
+@onready var money_label = $MoneyLabel
+@onready var pizzas_label = $VBoxContainer/PizzasLabel
 @onready var sell_button = $VBoxContainer/SellButton
 @onready var upgrade_button = $VBoxContainer/UpgradeButton
 @onready var to_kitchen_button = $ToKitchenButton

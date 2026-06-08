@@ -51,9 +51,14 @@ func _ready():
 	splash_label.add_theme_color_override("font_color", Color(1.0, 1.0, 0.0))
 	splash_label.add_theme_color_override("font_outline_color", Color(0, 0, 0))
 	splash_label.add_theme_constant_override("outline_size", 4)
-	splash_label.rotation_degrees = -15
-	splash_label.position = Vector2(700, 100) # Assuming 1152x648 window, around top-right of the title
-	add_child(splash_label)
+	splash_label.rotation_degrees = -20
+	
+	# Adăugăm splash-ul relativ la Titlu, ca să stea mereu în dreapta jos a textului
+	var title_node = main_panel.get_node("Title")
+	title_node.add_child(splash_label)
+	
+	# Pozitie locala fata de containerul Titlului (latime 600px)
+	splash_label.position = Vector2(500, 120)
 	
 	var tween = create_tween().set_loops()
 	tween.tween_property(splash_label, "scale", Vector2(1.1, 1.1), 0.5)

@@ -3,7 +3,7 @@ extends Control
 @onready var progress_bar = $VBoxContainer/ProgressBar
 @onready var make_pizza_button = $VBoxContainer/MakePizzaButton
 @onready var to_pizzeria_button = $ToPizzeriaButton
-@onready var pizzas_label = $PizzasLabel
+@onready var pizzas_label = $VBoxContainer/PizzasLabel
 @onready var money_label = $MoneyLabel
 @onready var to_office_button = $ToOfficeButton
 

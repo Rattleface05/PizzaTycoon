@@ -4,36 +4,36 @@
 [ext_resource type="Texture2D" uid="uid://pozacalculator" path="res://textures/backgrounds/pozacalculator.jpg" id="2_bg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
-bg_color = Color(0.18, 0.18, 0.24, 0.9)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 1, 1, 0.15)
+bg_color = Color(0.1, 0.2, 0.4, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 8
+border_color = Color(0.05, 0.1, 0.2, 0.9)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
-bg_color = Color(0.28, 0.28, 0.36, 0.95)
+bg_color = Color(0.15, 0.3, 0.5, 0.95)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.9, 0.3, 0.3, 0.9)
+border_width_bottom = 8
+border_color = Color(0.4, 0.6, 0.9, 0.9)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_pressed"]
-bg_color = Color(0.12, 0.12, 0.16, 0.9)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 1, 1, 0.05)
+bg_color = Color(0.05, 0.15, 0.3, 0.9)
+border_width_left = 2
+border_width_top = 6
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.02, 0.08, 0.15, 0.9)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -77,11 +77,15 @@ stretch_mode = 0
 layout_mode = 0
 offset_left = 32.0
 offset_top = 32.0
-offset_right = 250.0
+offset_right = 300.0
 offset_bottom = 80.0
+theme_override_colors/font_color = Color(0.5, 0.8, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.05, 0.2, 0.5, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 4
 theme_override_constants/outline_size = 8
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 48
 text = "OFFICE"
 
 [node name="ToKitchenButton" type="Button" parent="."]
@@ -91,15 +95,15 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -280.0
-offset_top = -90.0
+offset_left = -350.0
+offset_top = -120.0
 offset_right = -32.0
 offset_bottom = -32.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 24
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
