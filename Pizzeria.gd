@@ -88,11 +88,11 @@ func _spawn_customer():
 	if CustomerScene:
 		var c = CustomerScene.instantiate()
 		var viewport_size = get_viewport_rect().size
-		var target_x = viewport_size.x - 300
+		var target_x = viewport_size.x - 550
 		var target_y = viewport_size.y - 50 # 50px deasupra marginii de jos
 		
 		# Daca marimea ecranului nu e citita bine, punem valori statice sigure
-		if target_x < 400: target_x = 850
+		if target_x < 400: target_x = 600
 		if target_y < 300: target_y = 600
 		
 		c.global_position = Vector2(target_x, target_y)

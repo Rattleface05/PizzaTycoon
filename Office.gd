@@ -35,14 +35,16 @@ func _ready():
 	Global.prestige_updated.connect(_update_recipe_list)
 	
 	# Build styles
-	style_normal = _create_btn_style(Color(0.18, 0.18, 0.24, 0.9))
-	style_hover = _create_btn_style(Color(0.28, 0.28, 0.36, 0.95))
-	style_pressed = _create_btn_style(Color(0.12, 0.12, 0.16, 0.9))
-	style_tab_active = _create_btn_style(Color(0.45, 0.2, 0.2, 0.9))
-	style_tab_inactive = _create_btn_style(Color(0.12, 0.12, 0.16, 0.7))
-	style_gold_normal = _create_btn_style(Color(0.85, 0.65, 0.13, 0.9))
-	style_gold_hover = _create_btn_style(Color(1.0, 0.8, 0.2, 0.95))
-	style_gold_pressed = _create_btn_style(Color(0.65, 0.45, 0.05, 0.9))
+	style_normal = _create_btn_style(Color(0.1, 0.2, 0.4, 0.9), Color(0.05, 0.1, 0.2, 0.9), 8, 2)
+	style_hover = _create_btn_style(Color(0.15, 0.3, 0.5, 0.95), Color(0.4, 0.6, 0.9, 0.9), 8, 2)
+	style_pressed = _create_btn_style(Color(0.05, 0.15, 0.3, 0.9), Color(0.02, 0.08, 0.15, 0.9), 2, 6)
+	
+	style_tab_active = _create_btn_style(Color(0.15, 0.3, 0.5, 0.95), Color(0.4, 0.6, 0.9, 0.9), 8, 2)
+	style_tab_inactive = _create_btn_style(Color(0.08, 0.15, 0.25, 0.9), Color(0.04, 0.08, 0.15, 0.9), 4, 2)
+	
+	style_gold_normal = _create_btn_style(Color(0.85, 0.65, 0.13, 0.9), Color(0.6, 0.4, 0.05, 0.9), 8, 2)
+	style_gold_hover = _create_btn_style(Color(1.0, 0.8, 0.2, 0.95), Color(0.8, 0.6, 0.1, 0.9), 8, 2)
+	style_gold_pressed = _create_btn_style(Color(0.65, 0.45, 0.05, 0.9), Color(0.4, 0.2, 0.02, 0.9), 2, 6)
 	
 	# Restore active tab index
 	active_tab = Global.active_office_tab
@@ -52,14 +54,14 @@ func _ready():
 	_on_money_changed(Global.money)
 	_update_recipe_list()
 
-func _create_btn_style(bg_color: Color) -> StyleBoxFlat:
+func _create_btn_style(bg_color: Color, border_color: Color, bottom_thick: int, top_thick: int) -> StyleBoxFlat:
 	var style = StyleBoxFlat.new()
 	style.bg_color = bg_color
-	style.border_width_left = 1
-	style.border_width_top = 1
-	style.border_width_right = 1
-	style.border_width_bottom = 1
-	style.border_color = Color(1, 1, 1, 0.15)
+	style.border_width_left = 2
+	style.border_width_top = top_thick
+	style.border_width_right = 2
+	style.border_width_bottom = bottom_thick
+	style.border_color = border_color
 	style.corner_radius_top_left = 8
 	style.corner_radius_top_right = 8
 	style.corner_radius_bottom_right = 8
@@ -170,14 +172,14 @@ func _update_recipe_list():
 			
 			var name_lbl = Label.new()
 			name_lbl.text = recipe["name"]
-			name_lbl.add_theme_font_size_override("font_size", 16)
+			name_lbl.add_theme_font_size_override("font_size", 24)
 			name_lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
 			name_lbl.add_theme_constant_override("outline_size", 4)
 			info_vbox.add_child(name_lbl)
 			
 			var desc_lbl = Label.new()
 			desc_lbl.text = "Pizza Value: $" + Global.format_number(recipe["pizza_value"])
-			desc_lbl.add_theme_font_size_override("font_size", 12)
+			desc_lbl.add_theme_font_size_override("font_size", 18)
 			desc_lbl.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8, 1))
 			info_vbox.add_child(desc_lbl)
 			
@@ -185,8 +187,8 @@ func _update_recipe_list():
 			
 			# Action Button
 			var action_btn = Button.new()
-			action_btn.custom_minimum_size = Vector2(160, 45)
-			action_btn.add_theme_font_size_override("font_size", 13)
+			action_btn.custom_minimum_size = Vector2(250, 60)
+			action_btn.add_theme_font_size_override("font_size", 20)
 			
 			action_btn.add_theme_stylebox_override("normal", style_normal)
 			action_btn.add_theme_stylebox_override("hover", style_hover)
@@ -229,14 +231,14 @@ func _update_recipe_list():
 			
 			var name_lbl = Label.new()
 			name_lbl.text = chef["name"] + " (Hired: " + str(hired_count) + ")"
-			name_lbl.add_theme_font_size_override("font_size", 16)
+			name_lbl.add_theme_font_size_override("font_size", 24)
 			name_lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
 			name_lbl.add_theme_constant_override("outline_size", 4)
 			info_vbox.add_child(name_lbl)
 			
 			var desc_lbl = Label.new()
 			desc_lbl.text = "Cook Speed: +" + Global.format_number(chef["cook_rate"]) + " pizzas/s"
-			desc_lbl.add_theme_font_size_override("font_size", 12)
+			desc_lbl.add_theme_font_size_override("font_size", 18)
 			desc_lbl.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8, 1))
 			info_vbox.add_child(desc_lbl)
 			
@@ -244,8 +246,8 @@ func _update_recipe_list():
 			
 			# Action Button
 			var action_btn = Button.new()
-			action_btn.custom_minimum_size = Vector2(160, 45)
-			action_btn.add_theme_font_size_override("font_size", 13)
+			action_btn.custom_minimum_size = Vector2(250, 60)
+			action_btn.add_theme_font_size_override("font_size", 20)
 			
 			action_btn.add_theme_stylebox_override("normal", style_normal)
 			action_btn.add_theme_stylebox_override("hover", style_hover)
@@ -281,14 +283,14 @@ func _update_recipe_list():
 			
 			var name_lbl = Label.new()
 			name_lbl.text = cashier["name"] + " (Hired: " + str(hired_count) + ")"
-			name_lbl.add_theme_font_size_override("font_size", 16)
+			name_lbl.add_theme_font_size_override("font_size", 24)
 			name_lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
 			name_lbl.add_theme_constant_override("outline_size", 4)
 			info_vbox.add_child(name_lbl)
 			
 			var desc_lbl = Label.new()
 			desc_lbl.text = "Sell Speed: +" + Global.format_number(cashier["sell_rate"]) + "/s"
-			desc_lbl.add_theme_font_size_override("font_size", 12)
+			desc_lbl.add_theme_font_size_override("font_size", 18)
 			desc_lbl.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8, 1))
 			info_vbox.add_child(desc_lbl)
 			
@@ -296,8 +298,8 @@ func _update_recipe_list():
 			
 			# Action Button
 			var action_btn = Button.new()
-			action_btn.custom_minimum_size = Vector2(160, 45)
-			action_btn.add_theme_font_size_override("font_size", 13)
+			action_btn.custom_minimum_size = Vector2(250, 60)
+			action_btn.add_theme_font_size_override("font_size", 20)
 			
 			action_btn.add_theme_stylebox_override("normal", style_normal)
 			action_btn.add_theme_stylebox_override("hover", style_hover)
@@ -329,7 +331,7 @@ func _update_recipe_list():
 		
 		var gold_lbl = Label.new()
 		gold_lbl.text = "Golden Pizzas Owned: " + str(Global.prestige_points)
-		gold_lbl.add_theme_font_size_override("font_size", 16)
+		gold_lbl.add_theme_font_size_override("font_size", 24)
 		gold_lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2, 1)) # Gold text
 		gold_lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
 		gold_lbl.add_theme_constant_override("outline_size", 4)
@@ -338,7 +340,7 @@ func _update_recipe_list():
 		var pass_lbl = Label.new()
 		var passive_bonus = Global.prestige_points * 5
 		pass_lbl.text = "Current Passive Bonus: +" + str(passive_bonus) + "% Pizza Value"
-		pass_lbl.add_theme_font_size_override("font_size", 12)
+		pass_lbl.add_theme_font_size_override("font_size", 18)
 		pass_lbl.add_theme_color_override("font_color", Color(0.9, 0.9, 0.9, 1))
 		info_vbox.add_child(pass_lbl)
 		
@@ -346,8 +348,8 @@ func _update_recipe_list():
 		
 		# Prestige/Reset Action Button
 		var reset_btn = Button.new()
-		reset_btn.custom_minimum_size = Vector2(180, 45)
-		reset_btn.add_theme_font_size_override("font_size", 12)
+		reset_btn.custom_minimum_size = Vector2(250, 60)
+		reset_btn.add_theme_font_size_override("font_size", 18)
 		reset_btn.add_theme_stylebox_override("normal", style_gold_normal)
 		reset_btn.add_theme_stylebox_override("hover", style_gold_hover)
 		reset_btn.add_theme_stylebox_override("pressed", style_gold_pressed)
@@ -429,7 +431,7 @@ func _update_recipe_list():
 			
 			var name_lbl = Label.new()
 			name_lbl.text = upg["name"] + " (Lvl " + str(lvl) + ")"
-			name_lbl.add_theme_font_size_override("font_size", 14)
+			name_lbl.add_theme_font_size_override("font_size", 22)
 			name_lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
 			name_lbl.add_theme_constant_override("outline_size", 4)
 			upg_vbox.add_child(name_lbl)
@@ -439,15 +441,15 @@ func _update_recipe_list():
 				desc_lbl.text = upg["desc_func"].call(lvl) + " (MAX)"
 			else:
 				desc_lbl.text = upg["desc_func"].call(lvl) + " | " + upg["next_func"].call(lvl)
-			desc_lbl.add_theme_font_size_override("font_size", 11)
+			desc_lbl.add_theme_font_size_override("font_size", 16)
 			desc_lbl.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8, 1))
 			upg_vbox.add_child(desc_lbl)
 			
 			row.add_child(upg_vbox)
 			
 			var buy_btn = Button.new()
-			buy_btn.custom_minimum_size = Vector2(160, 40)
-			buy_btn.add_theme_font_size_override("font_size", 12)
+			buy_btn.custom_minimum_size = Vector2(250, 60)
+			buy_btn.add_theme_font_size_override("font_size", 18)
 			
 			buy_btn.add_theme_stylebox_override("normal", style_normal)
 			buy_btn.add_theme_stylebox_override("hover", style_hover)

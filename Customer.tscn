@@ -3,11 +3,19 @@
 [ext_resource type="Script" path="res://Customer.gd" id="1_m3w2j"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
-bg_color = Color(0.121569, 0.121569, 0.121569, 0.85098)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+bg_color = Color(0.9, 0.95, 1, 0.95)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(0.5, 0.7, 0.9, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+shadow_color = Color(0, 0, 0, 0.2)
+shadow_size = 10
+shadow_offset = Vector2(0, 5)
 
 [node name="Customer" type="Node2D"]
 script = ExtResource("1_m3w2j")
@@ -15,9 +23,9 @@ script = ExtResource("1_m3w2j")
 [node name="Sprite2D" type="Sprite2D" parent="."]
 
 [node name="Panel" type="Panel" parent="."]
-offset_left = -140.0
-offset_top = -250.0
-offset_right = 140.0
+offset_left = -200.0
+offset_top = -280.0
+offset_right = 200.0
 offset_bottom = -200.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
@@ -28,6 +36,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_colors/font_color = Color(0.2, 0.3, 0.4, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 24
 text = "Order Text Here"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3

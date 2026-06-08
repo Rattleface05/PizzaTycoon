@@ -141,7 +141,7 @@ size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.95, 0.35, 0.35, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 24
 text = " Laptop: Recipe Manager"
 vertical_alignment = 1
 
@@ -150,7 +150,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 1, 0.2, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 20
 text = "Cash: $0.00 "
 horizontal_alignment = 2
 vertical_alignment = 1
@@ -163,33 +163,37 @@ alignment = 1
 [node name="RecipesTabButton" type="Button" parent="LaptopScreen/MarginContainer/VBoxContainer/TabBar"]
 layout_mode = 2
 size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 50)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 18
 text = "Pizza Recipes"
 
 [node name="ChefsTabButton" type="Button" parent="LaptopScreen/MarginContainer/VBoxContainer/TabBar"]
 layout_mode = 2
 size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 50)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 18
 text = "Hire Chefs"
 
 [node name="CashiersTabButton" type="Button" parent="LaptopScreen/MarginContainer/VBoxContainer/TabBar"]
 layout_mode = 2
 size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 50)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 18
 text = "Hire Cashiers"
 
 [node name="PrestigeTabButton" type="Button" parent="LaptopScreen/MarginContainer/VBoxContainer/TabBar"]
 layout_mode = 2
 size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 50)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 18
 text = "Prestige"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="LaptopScreen/MarginContainer/VBoxContainer"]

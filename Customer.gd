@@ -36,7 +36,7 @@ func _ready():
 	
 	var tex_size = sprite.texture.get_size()
 	if tex_size.y > 0:
-		var scale_factor = 450.0 / tex_size.y # I-am facut putin mai mari sa se vada bine
+		var scale_factor = 650.0 / tex_size.y # I-am facut putin mai mari sa se vada bine
 		sprite.scale = Vector2(scale_factor, scale_factor)
 	
 	# Punctul zero (0,0) al scenei va fi la picioarele clientului
