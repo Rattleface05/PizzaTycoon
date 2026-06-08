@@ -1,5 +1,7 @@
 extends Node2D
 
+var ai_http: HTTPRequest
+
 var textures = [
 	preload("res://textures/people/chris.png"),
 	preload("res://textures/people/dylan.png"),
@@ -52,6 +54,30 @@ func _ready():
 		tween.parallel().tween_property(self, "modulate:a", 1.0, 0.5)
 	else:
 		modulate.a = 1.0
+		
+	# Ask AI for order
+	ai_http = HTTPRequest.new()
+	add_child(ai_http)
+	ai_http.request_completed.connect(_on_ai_request_completed)
+	
+	order_label.text = "Thinking..."
+	
+	var api_url = "http://localhost:8000/api/agent/customer"
+	if OS.has_feature("web"):
+		api_url = str(JavaScriptBridge.eval("window.location.origin")) + "/api/agent/customer"
+	ai_http.request(api_url)
+
+func _on_ai_request_completed(result, response_code, headers, body):
+	if response_code == 200:
+		var json = JSON.new()
+		var error = json.parse(body.get_string_from_utf8())
+		if error == OK:
+			var data = json.data
+			if typeof(data) == TYPE_DICTIONARY and data.has("text"):
+				order_label.text = data["text"]
+				return
+	# Fallback if API fails
+	order_label.text = orders[Global.current_customer_order_index]
 
 func leave():
 	# Dupa ce primeste comanda, multumeste si pleaca

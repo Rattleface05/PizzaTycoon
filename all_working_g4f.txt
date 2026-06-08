@@ -1,0 +1,2 @@
+Success with BlackForestLabs_Flux1Dev
+Found working: ['BlackForestLabs_Flux1Dev']
