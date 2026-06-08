@@ -3,6 +3,7 @@ extends Node
 signal money_changed(new_amount)
 signal pizzas_ready_changed(new_amount)
 signal level_changed(new_level)
+signal prestige_updated()
 
 var current_customer_texture_index: int = -1
 var current_customer_order_index: int = -1
@@ -16,6 +17,18 @@ var pizzas_ready: int = 0:
 	set(value):
 		pizzas_ready = value
 		pizzas_ready_changed.emit(pizzas_ready)
+
+var prestige_points: int = 0:
+	set(value):
+		prestige_points = value
+		prestige_updated.emit()
+
+var prestige_upgrades: Dictionary = {
+	"golden_crust": 0,
+	"kitchen_rush": 0,
+	"sales_pitch": 0,
+	"master_baker": 0
+}
 
 func add_pizza(price: float):
 	pizzas_ready += 1
@@ -49,6 +62,7 @@ var upgrade_level: int = 0:
 
 var transition_layer: CanvasLayer
 var color_rect: ColorRect
+var vortex_rect: ColorRect
 var is_transitioning: bool = false
 var active_office_tab: int = 0
 
@@ -63,6 +77,17 @@ func _ready():
 	color_rect.anchors_preset = Control.PRESET_FULL_RECT
 	color_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	transition_layer.add_child(color_rect)
+	
+	vortex_rect = ColorRect.new()
+	vortex_rect.anchors_preset = Control.PRESET_FULL_RECT
+	vortex_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var shader = load("res://vortex.gdshader")
+	var mat = ShaderMaterial.new()
+	mat.shader = shader
+	mat.set_shader_parameter("strength", 0.0)
+	vortex_rect.material = mat
+	vortex_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	transition_layer.add_child(vortex_rect)
 	
 	color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	is_transitioning = false
@@ -100,7 +125,9 @@ func save_game():
 			"hired_cashiers": hired_cashiers,
 			"unlocked_recipes": unlocked_recipes,
 			"active_recipe_index": active_recipe_index,
-			"active_office_tab": active_office_tab
+			"active_office_tab": active_office_tab,
+			"prestige_points": prestige_points,
+			"prestige_upgrades": prestige_upgrades
 		}
 		file.store_var(save_data)
 		file.close()
@@ -121,6 +148,13 @@ func load_game() -> bool:
 			if save_data.has("unlocked_recipes"): unlocked_recipes = save_data["unlocked_recipes"]
 			if save_data.has("active_recipe_index"): active_recipe_index = save_data["active_recipe_index"]
 			if save_data.has("active_office_tab"): active_office_tab = save_data["active_office_tab"]
+			if save_data.has("prestige_points"): prestige_points = save_data["prestige_points"]
+			if save_data.has("prestige_upgrades"):
+				var loaded_upgrades = save_data["prestige_upgrades"]
+				if loaded_upgrades is Dictionary:
+					for key in prestige_upgrades.keys():
+						if loaded_upgrades.has(key):
+							prestige_upgrades[key] = loaded_upgrades[key]
 			
 			# Emit updates to make sure UI is aware of new values
 			money_changed.emit(money)
@@ -129,6 +163,7 @@ func load_game() -> bool:
 			chefs_updated.emit()
 			recipes_updated.emit()
 			cashiers_updated.emit()
+			prestige_updated.emit()
 			return true
 	return false
 
@@ -144,6 +179,13 @@ func reset_game():
 	unlocked_recipes = [0]
 	active_recipe_index = 0
 	active_office_tab = 0
+	prestige_points = 0
+	prestige_upgrades = {
+		"golden_crust": 0,
+		"kitchen_rush": 0,
+		"sales_pitch": 0,
+		"master_baker": 0
+	}
 	
 	# Emit updates
 	money_changed.emit(money)
@@ -152,6 +194,74 @@ func reset_game():
 	chefs_updated.emit()
 	recipes_updated.emit()
 	cashiers_updated.emit()
+	prestige_updated.emit()
+
+func get_prestige_points_to_gain() -> int:
+	if money < 100000.0:
+		return 0
+	return int(floor(sqrt(money / 100000.0)))
+
+func play_prestige_transition():
+	if is_transitioning:
+		return
+	is_transitioning = true
+	
+	color_rect.mouse_filter = Control.MOUSE_FILTER_STOP
+	vortex_rect.mouse_filter = Control.MOUSE_FILTER_STOP
+	
+	var mat = vortex_rect.material as ShaderMaterial
+	
+	var tween = create_tween()
+	tween.set_trans(Tween.TRANS_CUBIC)
+	tween.set_ease(Tween.EASE_IN)
+	# Spin inward and increase effect
+	tween.tween_property(mat, "shader_parameter/strength", 25.0, 1.5)
+	
+	var color_tween = create_tween()
+	color_tween.tween_interval(1.0)
+	color_tween.tween_property(color_rect, "color:a", 1.0, 0.5)
+	
+	await tween.finished
+	
+	prestige_reset()
+	
+	var tween_out = create_tween()
+	tween_out.set_trans(Tween.TRANS_CUBIC)
+	tween_out.set_ease(Tween.EASE_OUT)
+	tween_out.tween_property(mat, "shader_parameter/strength", 0.0, 1.5)
+	
+	var color_tween_out = create_tween()
+	color_tween_out.tween_property(color_rect, "color:a", 0.0, 0.5)
+	
+	await tween_out.finished
+	
+	color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vortex_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	is_transitioning = false
+
+func prestige_reset():
+	var gained = get_prestige_points_to_gain()
+	prestige_points += gained
+	
+	money = 0.0
+	pizzas_ready = 0
+	upgrade_level = 0
+	hired_chefs = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+	hired_cashiers = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+	unlocked_recipes = [0]
+	active_recipe_index = 0
+	active_office_tab = 3
+	
+	# Emit updates
+	money_changed.emit(money)
+	pizzas_ready_changed.emit(pizzas_ready)
+	level_changed.emit(upgrade_level)
+	chefs_updated.emit()
+	recipes_updated.emit()
+	cashiers_updated.emit()
+	prestige_updated.emit()
+	
+	save_game()
 
 signal chefs_updated()
 
@@ -208,14 +318,21 @@ var active_recipe_index: int = 0:
 		recipes_updated.emit()
 
 func get_current_pizza_price() -> float:
+	var base_price = 5.0
 	if active_recipe_index >= 0 and active_recipe_index < RECIPES.size():
-		return RECIPES[active_recipe_index]["pizza_value"]
-	return 5.0
+		base_price = RECIPES[active_recipe_index]["pizza_value"]
+	
+	# Passive boost + upgrade boost
+	var boost = 1.0 + (prestige_points * 0.05) + (prestige_upgrades.get("golden_crust", 0) * 0.10)
+	return base_price * boost
 
 func _process(delta):
 	var total_rate = 0.0
 	for i in range(CHEFS.size()):
 		total_rate += hired_chefs[i] * CHEFS[i]["cook_rate"]
+	
+	# Kitchen Rush boost (+10% speed per level)
+	total_rate = total_rate * (1.0 + prestige_upgrades.get("kitchen_rush", 0) * 0.10)
 	
 	if total_rate > 0.0:
 		_auto_cook_progress += total_rate * delta
@@ -228,6 +345,9 @@ func _process(delta):
 	var total_sell_rate = 0.0
 	for i in range(CASHIERS.size()):
 		total_sell_rate += hired_cashiers[i] * CASHIERS[i]["sell_rate"]
+		
+	# Sales Pitch boost (+10% speed per level)
+	total_sell_rate = total_sell_rate * (1.0 + prestige_upgrades.get("sales_pitch", 0) * 0.10)
 		
 	if total_sell_rate > 0.0 and pizzas_ready > 0:
 		_auto_sell_progress += total_sell_rate * delta

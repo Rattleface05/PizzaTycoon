@@ -1,6 +1,6 @@
 Joc adevarat:
     Un joc adevarat Idle cu mecanici de auto make money 
-Presitge
+Presitge:
     sistemul care reseteaza progresul
     care sa iti dea niste bonusuri care sa te ajute sa faci mai multi bani
 Sa ruleze de pe un server local:

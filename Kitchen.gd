@@ -28,6 +28,7 @@ func _ready():
 	to_pizzeria_button.text = "Go to Pizzeria [D] ->"
 	to_office_button.text = "<- Go to Office [A]"
 	
+	clicks_needed = max(1, 5 - Global.prestige_upgrades.get("master_baker", 0))
 	progress_bar.max_value = clicks_needed
 	progress_bar.value = 0
 
