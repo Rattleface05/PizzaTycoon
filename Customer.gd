@@ -3,19 +3,28 @@ extends Node2D
 var ai_http: HTTPRequest
 
 var textures = [
-	preload("res://textures/people/chris.png"),
-	preload("res://textures/people/dylan.png"),
-	preload("res://textures/people/ian.png"),
-	preload("res://textures/people/jane.png"),
-	preload("res://textures/people/john.png"),
-	preload("res://textures/people/johnny.png"),
 	preload("res://textures/people/2.png"),
 	preload("res://textures/people/3.png"),
 	preload("res://textures/people/4.png"),
 	preload("res://textures/people/5.png"),
 	preload("res://textures/people/6.png"),
 	preload("res://textures/people/7.png"),
-	preload("res://textures/people/Untitled1.png")
+	preload("res://textures/people/Untitled1.png"),
+	preload("res://textures/people/WhatsApp_Image_2026-06-09_at_14.56.20-removebg-preview.png"),
+	preload("res://textures/people/WhatsApp_Image_2026-06-09_at_14.56.20_1_-removebg-preview.png"),
+	preload("res://textures/people/WhatsApp_Image_2026-06-09_at_14.56.20_2_-removebg-preview.png"),
+	preload("res://textures/people/WhatsApp_Image_2026-06-09_at_14.56.20_3_-removebg-preview.png"),
+	preload("res://textures/people/WhatsApp_Image_2026-06-09_at_14.56.20_4_-removebg-preview.png"),
+	preload("res://textures/people/WhatsApp_Image_2026-06-09_at_14.56.20_5_-removebg-preview.png"),
+	preload("res://textures/people/WhatsApp_Image_2026-06-09_at_14.56.21-removebg-preview.png"),
+	preload("res://textures/people/WhatsApp_Image_2026-06-09_at_14.56.21_1_-removebg-preview.png"),
+	preload("res://textures/people/bezea-removebg-preview.png"),
+	preload("res://textures/people/dragon.png"),
+	preload("res://textures/people/dumi-removebg-preview.png"),
+	preload("res://textures/people/emo.png"),
+	preload("res://textures/people/fish-removebg-preview.png"),
+	preload("res://textures/people/psihopat.png"),
+	preload("res://textures/people/salahor-removebg-preview.png")
 ]
 
 var orders = [
