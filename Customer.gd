@@ -8,7 +8,14 @@ var textures = [
 	preload("res://textures/people/ian.png"),
 	preload("res://textures/people/jane.png"),
 	preload("res://textures/people/john.png"),
-	preload("res://textures/people/johnny.png")
+	preload("res://textures/people/johnny.png"),
+	preload("res://textures/people/2.png"),
+	preload("res://textures/people/3.png"),
+	preload("res://textures/people/4.png"),
+	preload("res://textures/people/5.png"),
+	preload("res://textures/people/6.png"),
+	preload("res://textures/people/7.png"),
+	preload("res://textures/people/Untitled1.png")
 ]
 
 var orders = [
