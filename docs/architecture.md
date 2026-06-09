@@ -46,3 +46,55 @@ sequenceDiagram
     Python Backend-->>Joc: JSON Răspuns
     Joc->>Jucator: Afișează dialogul pe ecran
 ```
+
+## Ciclul de Progresie & Prestige
+Diagrama de stări descrie bucla principală a jocului idle, de la acumularea de resurse până la resetarea prin Prestige.
+
+```mermaid
+stateDiagram-v2
+    [*] --> JocNou : Start / Load Save
+
+    state JocNou {
+        [*] --> BuclaIdle
+        BuclaIdle : Bucla Idle Activă
+        BuclaIdle --> AutoCooking : Chefs angajați produc pizze\n(cook_rate * delta)
+        AutoCooking --> StocPizze : pizzas_ready++
+        StocPizze --> AutoSelling : Cashiers vând automat\n(sell_rate * delta)
+        AutoSelling --> Venituri : money += preț_pizza
+        Venituri --> BuclaIdle : Loop continuu
+
+        BuclaIdle --> ManualCook : Jucătorul apasă\n„Cook Pizza"
+        ManualCook --> StocPizze
+
+        BuclaIdle --> ManualSell : Jucătorul apasă\n„Sell Pizza"
+        ManualSell --> Venituri
+    }
+
+    JocNou --> Upgrade : money >= cost_upgrade
+    state Upgrade {
+        [*] --> CumparaBucatar : Angajează Chef\n(crește cook_rate)
+        [*] --> CumparaCasier : Angajează Cashier\n(crește sell_rate)
+        [*] --> DeblochezaReteta : Cumpără Rețetă Nouă\n(crește pizza_value)
+        CumparaBucatar --> [*]
+        CumparaCasier --> [*]
+        DeblochezaReteta --> [*]
+    }
+    Upgrade --> JocNou : Continuă bucla cu rate mai mari
+
+    JocNou --> VerificarePrestige : money >= 100,000
+    state VerificarePrestige {
+        [*] --> CalculPuncte : prestige_pts = floor(sqrt(money / 100k))
+        CalculPuncte --> ConfirmareJucator : Jucătorul confirmă Prestige
+    }
+
+    VerificarePrestige --> PrestigeReset : Confirmat
+    state PrestigeReset {
+        [*] --> ResetProgres : money, chefs,\ncashiers → 0
+        ResetProgres --> AdaugaPuncte : prestige_points += gained
+        AdaugaPuncte --> DeblochereUpgradePrestige : Prestige Shop\n(golden_crust, kitchen_rush,\nsales_pitch, master_baker)
+        DeblochereUpgradePrestige --> SalvareJoc : save_game()
+    }
+
+    PrestigeReset --> JocNou : Relua de la început\ncu bonusuri permanente
+    JocNou --> [*] : Ieșire / Salvare automată
+```
